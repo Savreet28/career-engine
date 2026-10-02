@@ -1,0 +1,36 @@
+{
+  "id": "software_engineer_helix",
+  "job_title": "Graduate Software Engineer",
+  "company": "Helix Software",
+  "role_id": "software_engineer",
+  "location": "Hyderabad, India (Hybrid)",
+  "experience_required": "0-1 years",
+  "about_the_role": "A structured graduate programme for final-year students and recent graduates. You will be paired with a senior engineer and rotate across two product teams in your first year.",
+  "responsibilities": [
+    "Implement well-scoped features under the guidance of a mentor.",
+    "Learn the codebase by fixing bugs and improving test coverage.",
+    "Document what you build so the next engineer can understand it.",
+    "Contribute to design discussions and ask questions early.",
+    "Use version control and code review as a daily habit."
+  ],
+  "required_skills": [
+    "Fundamentals of Data Structures and Algorithms taught in an undergraduate curriculum.",
+    "Programming ability in Python, Java, C++ or JavaScript.",
+    "Understanding of Object-Oriented Programming concepts such as encapsulation and polymorphism.",
+    "Basic SQL and the ability to model simple relational schemas.",
+    "Familiarity with Git and collaborative workflows.",
+    "Knowledge of Operating Systems and Computer Networks fundamentals."
+  ],
+  "preferred_skills": [
+    "Any experience with REST APIs or web development.",
+    "Exposure to Testing frameworks such as pytest or JUnit.",
+    "Experience working on a team project or hackathon.",
+    "Curiosity about System Design and distributed systems.",
+    "Familiarity with Linux command line tools."
+  ],
+  "qualifications": [
+    "Final-year student or recent graduate in Computer Science Engineering or a related field.",
+    "A minimum aggregate of 70% or equivalent CGPA.",
+    "At least one substantial project that you can explain in depth."
+  ]
+}

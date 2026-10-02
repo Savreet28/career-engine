@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+/*
+  Career Engine design tokens.
+
+  A single dark navy palette: a deep slate-blue ground, one blue accent for
+  interactive elements, and semantic colours reserved for score states so that
+  colour always carries meaning rather than decoration.
+*/
+@theme {
+  --color-ink-950: #070c18;
+  --color-ink-900: #0b1220;
+  --color-ink-850: #0f1829;
+  --color-ink-800: #141f33;
+  --color-ink-700: #1c2b45;
+  --color-ink-600: #2a3d5c;
+
+  --color-accent-300: #7cb0ff;
+  --color-accent-400: #4f90f5;
+  --color-accent-500: #2f6fe4;
+  --color-accent-600: #1d54bd;
+
+  --color-good-400: #34d399;
+  --color-warn-400: #fbbf24;
+  --color-bad-400: #f87171;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-ink-950);
+  color: #e5edfb;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Subtle depth behind the dashboard without a busy gradient. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(1100px 520px at 15% -10%, rgba(47, 111, 228, 0.16), transparent 60%),
+    radial-gradient(900px 500px at 95% 0%, rgba(29, 84, 189, 0.12), transparent 55%);
+}
+
+::selection {
+  background: var(--color-accent-600);
+  color: #fff;
+}
+
+/* Scrollbars, tuned to the dark ground. */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--color-ink-900); }
+::-webkit-scrollbar-thumb {
+  background: var(--color-ink-700);
+  border-radius: 999px;
+  border: 2px solid var(--color-ink-900);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--color-ink-600); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

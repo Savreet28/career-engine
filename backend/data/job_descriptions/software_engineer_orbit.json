@@ -1,0 +1,38 @@
+{
+  "id": "software_engineer_orbit",
+  "job_title": "Software Engineer",
+  "company": "Orbit Technologies",
+  "role_id": "software_engineer",
+  "location": "Pune, India (On-site)",
+  "experience_required": "0-2 years",
+  "about_the_role": "Orbit Technologies builds logistics software used by mid-size carriers. Engineers here own features end to end and are expected to write code that other engineers can safely change a year later.",
+  "responsibilities": [
+    "Design, build and maintain features across backend services and internal tools.",
+    "Write unit and integration tests that protect behaviour during refactoring.",
+    "Participate in code review, giving and receiving constructive technical feedback.",
+    "Debug production issues by reading logs, reproducing failures and writing regression tests.",
+    "Break large requirements into small, reviewable and independently shippable changes.",
+    "Work in an Agile team with sprint planning, stand-ups and retrospectives."
+  ],
+  "required_skills": [
+    "Strong command of Data Structures and Algorithms with the ability to reason about time and space complexity.",
+    "Solid Object-Oriented Programming skills and understanding of clean code principles.",
+    "Proficiency in at least one of Python, Java or JavaScript.",
+    "Experience designing and consuming REST APIs.",
+    "Working knowledge of SQL and relational database concepts.",
+    "Disciplined use of Git for version control, branching and pull requests.",
+    "Experience writing automated tests, whether unit testing or integration testing."
+  ],
+  "preferred_skills": [
+    "Familiarity with System Design concepts such as caching, load balancing and scalability.",
+    "Experience with Docker and containerised local development.",
+    "Exposure to CI/CD pipelines such as GitHub Actions or Jenkins.",
+    "Comfort working on Linux and with shell scripting.",
+    "Experience with cloud computing platforms such as AWS or Azure.",
+    "Understanding of Agile and Scrum delivery practices."
+  ],
+  "qualifications": [
+    "Bachelor's degree in Computer Science, Information Technology or a related discipline.",
+    "Evidence of programming ability through projects, internships or competitive programming."
+  ]
+}

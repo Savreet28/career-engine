@@ -1,0 +1,38 @@
+{
+  "id": "ai_ml_engineer_vertex",
+  "job_title": "Machine Learning Engineer (LLM Systems)",
+  "company": "Vertex AI Systems",
+  "role_id": "ai_ml_engineer",
+  "location": "Remote (India)",
+  "experience_required": "1-3 years",
+  "about_the_role": "We build retrieval-augmented assistants over large private document collections. This role sits between research and engineering: you will design retrieval pipelines and measure whether they actually answer user questions correctly.",
+  "responsibilities": [
+    "Design and evaluate Retrieval Augmented Generation pipelines over domain document collections.",
+    "Build and tune text chunking and embedding strategies for semantic search quality.",
+    "Maintain vector indexes and measure retrieval precision and recall against labelled query sets.",
+    "Integrate Large Language Models for grounded answer generation with citation of sources.",
+    "Profile and reduce latency and cost of inference workloads.",
+    "Partner with product to convert fuzzy requirements into measurable evaluation criteria."
+  ],
+  "required_skills": [
+    "Advanced Python programming with clean, tested and well-structured code.",
+    "Deep understanding of Embeddings, vector similarity search and cosine distance.",
+    "Experience with vector databases such as FAISS, Chroma, Pinecone or Qdrant.",
+    "Practical experience with Large Language Models and prompt engineering.",
+    "Strong Machine Learning foundations and the ability to design honest evaluation methodology.",
+    "Experience building REST APIs, typically with FastAPI, to expose model functionality.",
+    "Proficiency with Git and collaborative software development practices."
+  ],
+  "preferred_skills": [
+    "Experience with LangChain or LlamaIndex style orchestration frameworks.",
+    "Familiarity with PyTorch and fine-tuning transformer models.",
+    "Knowledge of NLP evaluation metrics and human annotation workflows.",
+    "Experience with Docker, Kubernetes and cloud deployment on AWS or Google Cloud.",
+    "Exposure to monitoring and observability for machine learning services.",
+    "Understanding of data privacy considerations when handling customer documents."
+  ],
+  "qualifications": [
+    "Bachelor's or Master's degree in Computer Science or an equivalent practical background.",
+    "Demonstrable projects involving semantic search, question answering or LLM applications."
+  ]
+}

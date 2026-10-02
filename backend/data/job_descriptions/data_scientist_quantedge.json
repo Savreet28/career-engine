@@ -1,0 +1,40 @@
+{
+  "id": "data_scientist_quantedge",
+  "job_title": "Data Scientist",
+  "company": "QuantEdge Analytics",
+  "role_id": "data_scientist",
+  "location": "Bengaluru, India (Hybrid)",
+  "experience_required": "0-2 years",
+  "about_the_role": "QuantEdge helps retail clients understand customer behaviour. The job is as much about asking the right question and communicating the answer as it is about modelling.",
+  "responsibilities": [
+    "Explore large datasets to identify patterns, anomalies and business opportunities.",
+    "Build predictive models and validate them honestly with appropriate holdout strategies.",
+    "Design and analyse A/B tests, including sample size and significance calculations.",
+    "Create clear visualisations and dashboards that non-technical stakeholders can act on.",
+    "Write reproducible analysis code and document assumptions and limitations.",
+    "Present findings to business stakeholders and defend the methodology."
+  ],
+  "required_skills": [
+    "Strong Python for data analysis, particularly Pandas and NumPy.",
+    "Advanced SQL including joins, window functions and aggregation over large tables.",
+    "Solid Statistics including distributions, confidence intervals and hypothesis testing.",
+    "Machine Learning experience with regression, classification and clustering methods.",
+    "Data Visualization skills using matplotlib, seaborn or an equivalent library.",
+    "Exploratory Data Analysis discipline and the ability to spot data quality problems."
+  ],
+  "preferred_skills": [
+    "Experience with scikit-learn pipelines and hyperparameter tuning.",
+    "A/B Testing and experimentation design in a product setting.",
+    "Feature Engineering for tabular and time-series data.",
+    "Time Series forecasting techniques.",
+    "Experience with Apache Spark or other distributed data processing.",
+    "Dashboarding with Tableau or Power BI.",
+    "Familiarity with R for statistical work.",
+    "Exposure to Deep Learning where it is genuinely warranted."
+  ],
+  "qualifications": [
+    "Bachelor's or Master's degree in Statistics, Mathematics, Computer Science or Economics.",
+    "A portfolio of analyses on real, messy datasets.",
+    "Ability to explain a model's limitations as clearly as its accuracy."
+  ]
+}

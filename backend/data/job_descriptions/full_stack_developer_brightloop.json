@@ -1,0 +1,39 @@
+{
+  "id": "full_stack_developer_brightloop",
+  "job_title": "Full Stack Developer",
+  "company": "BrightLoop",
+  "role_id": "full_stack_developer",
+  "location": "Chandigarh, India (On-site)",
+  "experience_required": "0-2 years",
+  "about_the_role": "BrightLoop is a small product team building education software. Everyone here works across the stack, from the database schema to the button the student clicks.",
+  "responsibilities": [
+    "Own features end to end, from data model and API through to the user interface.",
+    "Build React frontends and Node.js or Python backends that serve them.",
+    "Design database schemas and write the queries that back your features.",
+    "Implement authentication, session handling and role-based access control.",
+    "Deploy and debug your own work, with support from the team.",
+    "Keep the codebase consistent through code review and shared conventions."
+  ],
+  "required_skills": [
+    "Strong JavaScript fundamentals across both browser and server environments.",
+    "Practical React experience building multi-page application interfaces.",
+    "Backend development with Node.js and Express, or with Python and FastAPI.",
+    "Ability to design REST APIs and connect them to a frontend.",
+    "SQL knowledge and comfort designing relational schemas.",
+    "Confident use of HTML and CSS for layout and styling.",
+    "Daily use of Git for version control."
+  ],
+  "preferred_skills": [
+    "TypeScript across the stack for shared type definitions.",
+    "Experience with MongoDB as well as PostgreSQL.",
+    "Familiarity with Tailwind CSS for rapid interface development.",
+    "Authentication experience with JWT or OAuth providers.",
+    "Exposure to Docker and CI/CD for repeatable deployment.",
+    "Automated testing habits on both frontend and backend.",
+    "Interest in System Design as the product scales."
+  ],
+  "qualifications": [
+    "Bachelor's degree in Computer Science Engineering or a related field.",
+    "At least one full-stack project you built and can demonstrate live."
+  ]
+}

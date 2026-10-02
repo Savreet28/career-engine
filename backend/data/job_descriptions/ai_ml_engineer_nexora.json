@@ -1,0 +1,40 @@
+{
+  "id": "ai_ml_engineer_nexora",
+  "job_title": "AI/ML Engineer",
+  "company": "Nexora Labs",
+  "role_id": "ai_ml_engineer",
+  "location": "Bengaluru, India (Hybrid)",
+  "experience_required": "0-2 years",
+  "about_the_role": "Nexora Labs builds machine learning systems that power document understanding for enterprise customers. As an AI/ML Engineer you will take models from experiment to production and own their quality in the real world.",
+  "responsibilities": [
+    "Train, evaluate and iterate on machine learning models for classification and information extraction tasks.",
+    "Build reproducible data pipelines in Python using Pandas and NumPy to prepare training datasets.",
+    "Package trained models behind REST APIs so that product teams can consume them reliably.",
+    "Design offline evaluation suites and track model quality metrics across releases.",
+    "Collaborate with backend engineers to deploy models using Docker containers.",
+    "Write clear documentation explaining how each model works and where it fails."
+  ],
+  "required_skills": [
+    "Strong programming ability in Python, including NumPy and Pandas for data manipulation.",
+    "Solid grounding in Machine Learning fundamentals such as supervised learning, regularisation and the bias-variance tradeoff.",
+    "Practical experience building Deep Learning models with PyTorch or TensorFlow.",
+    "Hands-on experience with scikit-learn for classical models, feature engineering and model selection.",
+    "Working knowledge of Natural Language Processing techniques including tokenisation, embeddings and text classification.",
+    "Ability to write SQL queries to extract and aggregate training data from relational databases.",
+    "Understanding of Statistics and probability, including hypothesis testing and evaluation metrics such as precision, recall and F1."
+  ],
+  "preferred_skills": [
+    "Experience with Large Language Models and prompt engineering for production applications.",
+    "Familiarity with Retrieval Augmented Generation pipelines and vector databases such as FAISS or Chroma.",
+    "Exposure to Hugging Face Transformers and sentence embedding models.",
+    "Experience serving models with FastAPI and containerising them with Docker.",
+    "Awareness of MLOps practices such as experiment tracking, model versioning and monitoring.",
+    "Experience deploying workloads on AWS or another cloud platform.",
+    "Comfort with Git based collaboration, code review and CI/CD pipelines."
+  ],
+  "qualifications": [
+    "Bachelor's degree in Computer Science, Data Science, Mathematics or a related field.",
+    "A portfolio of machine learning projects, published notebooks or open-source contributions.",
+    "Evidence of applying models to real datasets rather than only tutorial datasets."
+  ]
+}

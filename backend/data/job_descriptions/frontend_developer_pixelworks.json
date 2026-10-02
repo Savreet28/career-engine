@@ -1,0 +1,38 @@
+{
+  "id": "frontend_developer_pixelworks",
+  "job_title": "Frontend Developer",
+  "company": "Pixelworks Digital",
+  "role_id": "frontend_developer",
+  "location": "Mumbai, India (Hybrid)",
+  "experience_required": "0-2 years",
+  "about_the_role": "Pixelworks builds customer-facing dashboards for healthcare providers. Accessibility and performance are product requirements, not afterthoughts.",
+  "responsibilities": [
+    "Build responsive user interfaces in React that work from 320px mobile widths upward.",
+    "Translate Figma designs into accurate, accessible and reusable components.",
+    "Consume REST APIs, handling loading, empty and error states explicitly.",
+    "Ensure interfaces meet WCAG accessibility guidelines including keyboard navigation.",
+    "Optimise bundle size and rendering performance for low-bandwidth users.",
+    "Write component tests and participate in design and code review."
+  ],
+  "required_skills": [
+    "Strong HTML and CSS fundamentals including flexbox, grid and the box model.",
+    "Proficiency in modern JavaScript including ES6 features, promises and async/await.",
+    "Solid React experience with hooks, component composition and state management.",
+    "Ability to build Responsive Design layouts that adapt across screen sizes.",
+    "Experience consuming REST APIs from the browser and handling failures gracefully.",
+    "Version control with Git in a team setting."
+  ],
+  "preferred_skills": [
+    "TypeScript for type-safe component development.",
+    "Experience with Tailwind CSS or another utility-first styling approach.",
+    "Familiarity with Next.js for server rendering and routing.",
+    "State management with Redux or a modern alternative.",
+    "Knowledge of Web Accessibility standards and assistive technology testing.",
+    "Experience with Vite or Webpack build tooling.",
+    "Component testing with Jest or React Testing Library."
+  ],
+  "qualifications": [
+    "Bachelor's degree in a technical field or an equivalent portfolio.",
+    "A portfolio of deployed interfaces you designed or implemented."
+  ]
+}

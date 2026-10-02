@@ -1,0 +1,22 @@
+Senior Frontend Engineer - Helios Retail
+
+We are hiring a frontend engineer to rebuild our customer dashboard from scratch.
+You will own the component library and the performance budget.
+
+Required skills:
+- Expert level TypeScript and modern JavaScript
+- Deep React experience including hooks, context and performance profiling
+- Strong CSS skills; we use Tailwind CSS across the entire product
+- Experience consuming REST APIs and handling loading and error states
+- Familiarity with Vite as a build tool
+- Confident use of Git in a team setting
+
+Nice to have:
+- Next.js server-side rendering
+- Web Accessibility knowledge to WCAG 2.1 AA
+- Component testing with Jest and React Testing Library
+- An eye for design and comfort working from Figma files
+
+Qualifications:
+- Bachelor's degree in a technical field, or an equivalent portfolio
+- At least one production interface you can walk us through

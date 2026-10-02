@@ -1,0 +1,38 @@
+{
+  "id": "backend_developer_stackforge",
+  "job_title": "Backend Developer",
+  "company": "StackForge",
+  "role_id": "backend_developer",
+  "location": "Gurugram, India (Hybrid)",
+  "experience_required": "1-3 years",
+  "about_the_role": "StackForge runs the payments and reconciliation backend for fintech clients. Correctness, observability and clear data modelling matter more here than shipping fast.",
+  "responsibilities": [
+    "Design, build and document REST APIs consumed by web and mobile clients.",
+    "Model relational database schemas and write efficient SQL queries with appropriate indexes.",
+    "Implement authentication and authorisation using JWT and OAuth2 flows.",
+    "Add structured logging, metrics and alerting so failures are detected before customers notice.",
+    "Write integration tests covering the critical transaction paths.",
+    "Review database migrations for backwards compatibility and data safety."
+  ],
+  "required_skills": [
+    "Strong server-side Python, typically with FastAPI, Django or Flask.",
+    "Solid experience designing and versioning REST APIs.",
+    "Proficiency in SQL and relational Database Design including normalisation and indexing.",
+    "Hands-on experience with PostgreSQL or MySQL in production.",
+    "Disciplined use of Git and pull-request based code review.",
+    "Experience writing automated Testing suites for server-side code."
+  ],
+  "preferred_skills": [
+    "Experience with Docker and container-based deployment.",
+    "Familiarity with Redis for caching and rate limiting.",
+    "Exposure to Microservices architecture and service-to-service communication.",
+    "Experience with message queues such as RabbitMQ or Kafka for asynchronous processing.",
+    "Understanding of MongoDB or other document databases.",
+    "Experience with CI/CD pipelines and deploying to AWS.",
+    "Interest in System Design and scaling read-heavy workloads."
+  ],
+  "qualifications": [
+    "Bachelor's degree in Computer Science or equivalent practical experience.",
+    "Experience operating a service that real users depended on."
+  ]
+}

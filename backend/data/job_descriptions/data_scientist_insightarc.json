@@ -1,0 +1,36 @@
+{
+  "id": "data_scientist_insightarc",
+  "job_title": "Junior Data Scientist",
+  "company": "InsightArc",
+  "role_id": "data_scientist",
+  "location": "Remote (India)",
+  "experience_required": "0-1 years",
+  "about_the_role": "An entry-level data science role on a three-person analytics team. You will get unusually broad exposure, from writing the extraction query to presenting the result.",
+  "responsibilities": [
+    "Write SQL to extract and aggregate data from the company data warehouse.",
+    "Clean and prepare datasets for analysis using Pandas.",
+    "Build baseline models and compare them against simple heuristics.",
+    "Produce weekly reporting and investigate anomalies in key metrics.",
+    "Document every analysis so it can be reproduced by someone else."
+  ],
+  "required_skills": [
+    "Working knowledge of Python and the Pandas library.",
+    "Ability to write correct SQL queries against relational databases.",
+    "Undergraduate-level Statistics including probability and significance testing.",
+    "Basic Machine Learning understanding, including train/test splitting and overfitting.",
+    "Data Visualization for communicating results clearly.",
+    "Careful, methodical Data Analysis habits."
+  ],
+  "preferred_skills": [
+    "Exposure to scikit-learn for model building.",
+    "Familiarity with Excel for quick stakeholder-facing analysis.",
+    "Experience with Data Warehousing tools such as BigQuery or Snowflake.",
+    "Interest in ETL pipelines and data engineering fundamentals.",
+    "Any experience with Model Evaluation techniques such as cross-validation.",
+    "Version control with Git."
+  ],
+  "qualifications": [
+    "Final-year student or recent graduate in a quantitative discipline.",
+    "A project where you analysed a dataset you sourced yourself."
+  ]
+}

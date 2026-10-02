@@ -1,0 +1,38 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# --- Secrets ---
+# Never commit real keys. backend/.env.example is the template that IS committed.
+.env
+.env.local
+*.env
+!.env.example
+
+# --- Node / frontend ---
+node_modules/
+dist/
+.vite/
+*.log
+npm-debug.log*
+
+# --- Generated RAG artefacts ---
+# The FAISS index is rebuilt automatically from data/job_descriptions/ on first
+# run, so it does not belong in version control.
+backend/data/vector_store/
+
+# --- Editors / OS ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# --- Caches ---
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/

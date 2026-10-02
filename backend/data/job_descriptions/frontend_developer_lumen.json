@@ -1,0 +1,36 @@
+{
+  "id": "frontend_developer_lumen",
+  "job_title": "React Developer",
+  "company": "Lumen Interfaces",
+  "role_id": "frontend_developer",
+  "location": "Noida, India (On-site)",
+  "experience_required": "0-1 years",
+  "about_the_role": "Lumen Interfaces builds design-system-driven web applications for B2B SaaS clients. You will spend most of your time in React, turning a component library into real product screens.",
+  "responsibilities": [
+    "Implement screens in React using an existing component library and design tokens.",
+    "Wire up application state and handle asynchronous data fetching from REST APIs.",
+    "Fix cross-browser and responsive layout defects reported by QA.",
+    "Contribute reusable components back to the shared design system.",
+    "Keep interfaces fast by avoiding unnecessary re-renders and oversized bundles."
+  ],
+  "required_skills": [
+    "Confident JavaScript, including array methods, destructuring and modules.",
+    "React fundamentals: components, props, hooks and conditional rendering.",
+    "HTML semantics and CSS layout using flexbox and grid.",
+    "Responsive Design across mobile, tablet and desktop breakpoints.",
+    "Ability to call REST APIs with fetch and render loading and error states.",
+    "Git basics including branching, committing and resolving merge conflicts."
+  ],
+  "preferred_skills": [
+    "Tailwind CSS or another utility-first CSS framework.",
+    "TypeScript for component prop typing.",
+    "Experience with Vite as a build tool.",
+    "Understanding of Web Accessibility and semantic markup.",
+    "Familiarity with Figma for reading design specifications.",
+    "Any experience with automated frontend Testing."
+  ],
+  "qualifications": [
+    "Bachelor's degree in Computer Science or a demonstrable equivalent portfolio.",
+    "At least two React projects you can walk through in an interview."
+  ]
+}

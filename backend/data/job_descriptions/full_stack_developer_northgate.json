@@ -1,0 +1,38 @@
+{
+  "id": "full_stack_developer_northgate",
+  "job_title": "MERN Full Stack Engineer",
+  "company": "Northgate Labs",
+  "role_id": "full_stack_developer",
+  "location": "Remote (India)",
+  "experience_required": "1-3 years",
+  "about_the_role": "Northgate Labs builds internal tools for manufacturing clients. Small team, wide scope: you will touch the database, the API and the interface in the same week.",
+  "responsibilities": [
+    "Build full features across a MongoDB, Express, React and Node.js stack.",
+    "Design REST API contracts and implement both sides of them.",
+    "Implement authentication, authorisation and audit logging.",
+    "Write integration tests covering the API surface.",
+    "Containerise services with Docker and support the deployment pipeline.",
+    "Review teammates' pull requests across both frontend and backend code."
+  ],
+  "required_skills": [
+    "Strong JavaScript and Node.js for server-side development.",
+    "React for building application interfaces with component state.",
+    "Experience with Express.js and designing REST APIs.",
+    "Database experience with MongoDB, plus SQL fundamentals for relational work.",
+    "HTML and CSS sufficient to implement a given design accurately.",
+    "Git based workflow with meaningful commits and code review."
+  ],
+  "preferred_skills": [
+    "TypeScript across frontend and backend.",
+    "Experience with PostgreSQL alongside document databases.",
+    "Authentication with JWT and third-party OAuth providers.",
+    "Docker and CI/CD experience for automated deployment.",
+    "Tailwind CSS for interface styling.",
+    "Automated Testing with Jest or an equivalent framework.",
+    "Awareness of Web Security basics such as input validation and XSS prevention."
+  ],
+  "qualifications": [
+    "Degree in Computer Science Engineering or equivalent professional experience.",
+    "A deployed full-stack application you built and maintained."
+  ]
+}

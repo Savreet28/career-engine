@@ -1,0 +1,36 @@
+{
+  "id": "backend_developer_corelayer",
+  "job_title": "Python Backend Engineer",
+  "company": "CoreLayer Systems",
+  "role_id": "backend_developer",
+  "location": "Remote (India)",
+  "experience_required": "0-2 years",
+  "about_the_role": "We build the internal API platform that every other team at CoreLayer depends on. You will work on services that must stay up while being changed weekly.",
+  "responsibilities": [
+    "Build and maintain Python microservices exposing REST and GraphQL endpoints.",
+    "Own database schema changes from design through migration and rollout.",
+    "Improve API latency by profiling queries and adding caching where it is justified.",
+    "Write clear API documentation and keep OpenAPI schemas accurate.",
+    "Participate in an on-call rotation with a supportive escalation path."
+  ],
+  "required_skills": [
+    "Professional or project experience with Python for backend development.",
+    "Practical understanding of REST APIs, HTTP semantics and status codes.",
+    "SQL proficiency and comfort with schema design in PostgreSQL.",
+    "Experience with a Python web framework such as FastAPI, Django or Flask.",
+    "Version control with Git and a habit of small, reviewable commits.",
+    "Ability to write unit tests and reason about edge cases."
+  ],
+  "preferred_skills": [
+    "Experience with Docker for local development and deployment.",
+    "Familiarity with authentication patterns including JWT and session handling.",
+    "Exposure to Redis, Celery or other asynchronous task processing.",
+    "Knowledge of Linux server administration and Nginx.",
+    "Experience with monitoring tools such as Prometheus and Grafana.",
+    "Understanding of web security basics and the OWASP Top Ten."
+  ],
+  "qualifications": [
+    "Degree in Computer Science or demonstrable equivalent self-taught experience.",
+    "A public repository or project showing backend code you have written."
+  ]
+}
