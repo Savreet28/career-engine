@@ -5,7 +5,7 @@ and **target job role** and returns two things: a transparent **ATS score**, and
 an **explainable job match** built with RAG over job-description data.
 
 Every number it reports is computed by rules you can read in this repository.
-**No language model is used anywhere.**
+
 
 ---
 
