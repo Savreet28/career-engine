@@ -331,30 +331,29 @@ properties a model cannot:
 
 ### The ten components
 
-| # | Component | Max | What it measures |
+| # | Component | Max | What it owns |
 |---|---|---:|---|
-| A | Contact Information | 10 | Email 3, phone 2, name 2, LinkedIn 2, GitHub 1 |
-| B | Resume Sections | 10 | Skills 3, Experience-or-Projects 3, Education 2, Summary 1, Certifications-or-Achievements 1 |
-| C | Skills Breadth | 12 | 8 for how many skills, 4 for category diversity |
-| D | Target Role Relevance | 18 | 13.5 core coverage + 4.5 preferred coverage |
-| E | Job Description Keyword Match | 20 | Share of the posting's skill keywords present |
-| F | Experience & Projects | 10 | Entry count plus whether entries name technologies |
-| G | Quantifiable Achievements | 5 | Lines carrying a real metric |
-| H | Education | 5 | Entry parsed 2, degree recognised 2, CGPA/percentage 1 |
-| I | Formatting & Readability | 5 | Bullets 2, action verbs 1, length 1, bullet length 1 |
-| J | GitHub Profile Evidence | 5 | Profile 1, ≥3 original repos 1, ≥2 described 1, relevant skills 2 |
+| A | Contact Information | 10 | Email 3, phone 2, name 2, LinkedIn 2, GitHub link 1 |
+| B | Skills | 15 | Skills section 3, how many skills 8, category diversity 4 |
+| C | Target Role Relevance | 18 | 13.5 core coverage + 4.5 preferred coverage |
+| D | Job Description Keyword Match | 20 | Share of the posting's skill keywords present |
+| E | Experience & Projects | 14 | Section 4, then entry count and detail 10 |
+| F | Education | 8 | Section 3, entry parsed 2, degree 2, CGPA/percentage 1 |
+| G | Quantifiable Achievements | 5 | Section 1, lines carrying a real metric 4 |
+| H | Formatting & Readability | 5 | Summary section 1, bullets 2, action verbs 1, scannable length 1 |
+| I | GitHub Profile Evidence | 5 | Profile 1, ≥3 original repos 1, ≥2 described 1, relevant skills 2 |
 | | **Total** | **100** | |
 
 ### Why these weights
 
 A, B and I model what an ATS **parser** needs — if it cannot find your email or
-read your sections, nothing else matters. **E carries the largest single weight
+read your headings, nothing else matters. **D carries the largest single weight
 (20)** because keyword matching against the specific posting is the closest
-analogue to how real ATS ranking works, and D (18) generalises that to the role.
-C, F, G and H reward the substance a human reviewer looks for once the parser
+analogue to how real ATS ranking works, and C (18) generalises that to the role.
+B, E, F and G reward the substance a human reviewer looks for once the parser
 lets you through.
 
-**J is only 5 points on purpose.** A real ATS never sees a GitHub profile.
+**I is only 5 points on purpose.** A real ATS never sees a GitHub profile.
 Weighting it heavily would make the score less faithful to the thing it models.
 It is included because the project's stated input is *resume + GitHub + role*,
 and it is kept small and clearly separated rather than blended in.
@@ -392,7 +391,7 @@ scaled_coverage = min(1.0, actual_coverage / expected_coverage)
 A fresher covering 36% of a role's requirements scores 36/50 = **72%** of the
 available points. A senior candidate at the same 36% scores 36/85 = **42%**.
 
-This applies to the coverage-based components (Skills Breadth, Role Relevance,
+This applies to the coverage-based components (Skills, Role Relevance,
 JD Keyword Match, Quantifiable Achievements) and to the Experience & Projects
 split — freshers rarely have formal employment, so projects carry 7 of its 10
 points instead of 5. Internships still count as experience.
@@ -591,7 +590,7 @@ reports:
 
 ```
 ATS Score - 92/100 (Strong)
- • Full marks on Contact Information, Resume Sections, Skills Breadth (+3 more).
+ • Full marks on Contact Information, Skills, Education (+3 more).
  • Weakest: GitHub Profile Evidence at 0/5 - No GitHub username was provided.
  • 8 points are still available across 2 components.
 
@@ -735,7 +734,7 @@ Career-Engine-Project/
 │   │   └── vector_store/        Generated FAISS index (gitignored)
 │   │
 │   └── tests/
-│       ├── test_api.py          End-to-end test suite (161 checks)
+│       ├── test_api.py          End-to-end test suite (174 checks)
 │       ├── make_fixtures.py     Generates sample resumes
 │       └── fixtures/            Generated resume files (gitignored)
 │
@@ -824,7 +823,7 @@ python tests/make_fixtures.py       # first time only; needs requirements-dev.tx
 python tests/test_api.py
 ```
 
-**161 checks**, covering:
+**174 checks**, covering:
 
 * resume parsing in both formats, and every failure mode
 * PDF and DOCX of the same resume producing identical skills
@@ -832,6 +831,8 @@ python tests/test_api.py
 * RAG ingestion, retrieval relevance, and role filtering
 * ATS determinism, discrimination (a weak resume must score far lower), and
   that the total always equals the sum of its components
+* that no fact is double counted -- removing a section shifts exactly one
+  component, and it is the component that owns that content
 * experience-level scaling and monotonicity across levels
 * job matching and evidence traceability
 * the full pipeline, SSE streaming, and validation

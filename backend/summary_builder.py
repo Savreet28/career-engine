@@ -189,13 +189,19 @@ def _action_section(ats: dict, match: dict, resume: dict) -> Dict[str, object]:
                 f"Add the missing contact fields as plain text, not inside an image "
                 f"or a header (+{points})."
             )
-        elif name == "Resume Sections":
-            missing_sections = resume.get("missing_core_sections") or []
+        elif name == "Education":
             actions.append(
-                f"Add clearly labelled headings for "
-                f"{_join(missing_sections, 3) or 'the missing sections'} (+{points})."
+                f"Add a clearly labelled Education heading with your degree and "
+                f"CGPA or percentage (+{points})."
             )
         elif name == "Formatting & Readability":
+            missing_sections = resume.get("missing_core_sections") or []
+            if "summary" in missing_sections:
+                actions.append(
+                    f"Add a short Summary or Objective at the top, and convert dense "
+                    f"paragraphs into bullets starting with an action verb (+{points})."
+                )
+                continue
             actions.append(
                 f"Convert dense paragraphs into bullets that start with an action "
                 f"verb (+{points})."
@@ -205,10 +211,10 @@ def _action_section(ats: dict, match: dict, resume: dict) -> Dict[str, object]:
                 f"Describe each project with what you built and which technologies "
                 f"you used (+{points})."
             )
-        elif name == "Skills Breadth":
+        elif name == "Skills":
             actions.append(
-                f"List the tools you have actually used across languages, frameworks "
-                f"and databases (+{points})."
+                f"Add a clearly labelled Skills section listing the tools you have "
+                f"actually used across languages, frameworks and databases (+{points})."
             )
 
     if not actions:

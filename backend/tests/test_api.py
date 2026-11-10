@@ -374,6 +374,75 @@ def test_ats() -> None:
 
 
 # ---------------------------------------------------------------------------
+# 6b. No double counting
+# ---------------------------------------------------------------------------
+def test_no_double_counting() -> None:
+    """
+    Each fact about the resume must move exactly ONE component.
+
+    An earlier version had a separate "Resume Sections" component that scored
+    the presence of the Education, Skills and Experience sections, while the
+    Education, Skills and Experience components scored the same sections again
+    -- so one fact moved the total twice.
+    """
+    section("6b. One fact, one component")
+    import copy
+
+    from ats_scorer import MAX_TOTAL, WEIGHTS, score_resume
+    from resume_parser import parse_resume
+    from skills_data import ROLES_BY_ID
+
+    check("component weights still total 100",
+          sum(WEIGHTS.values()) == 100 == MAX_TOTAL, str(sum(WEIGHTS.values())))
+    check("there is no standalone sections component",
+          "resume_sections" not in WEIGHTS, str(list(WEIGHTS)))
+
+    resume = parse_resume((FIXTURES / "sample_resume.pdf").read_bytes(), "sample.pdf")
+    role = ROLES_BY_ID["ai_ml_engineer"]
+    jd = "Python, PyTorch, Machine Learning, SQL, Docker"
+
+    def scores(parsed):
+        report = score_resume(parsed, role, jd, "test", None, experience_level="fresher")
+        return report, {c["component"]: c["score"] for c in report["components"]}
+
+    base_report, base = scores(resume)
+    check("the total equals the sum of the components",
+          base_report["score"] == sum(c["score"] for c in base_report["components"]))
+
+    # Removing a section must shift exactly one component, never two.
+    groups = {
+        "education": ["education"],
+        "skills": ["skills"],
+        "experience/projects": ["experience", "projects"],
+        "achievements/certifications": ["achievements", "certifications"],
+        "summary": ["summary"],
+    }
+    for label, group in groups.items():
+        variant = copy.deepcopy(resume)
+        variant["sections"] = [x for x in variant["sections"] if x not in group]
+        _, after = scores(variant)
+        moved = [k for k, v in after.items() if v != base[k]]
+        check(f"removing the {label} section moves exactly one component",
+              len(moved) == 1, f"moved: {moved}")
+
+    # And the owner must be the component that logically owns that content.
+    owners = {
+        "education": "Education",
+        "skills": "Skills",
+        "experience/projects": "Experience & Projects",
+        "achievements/certifications": "Quantifiable Achievements",
+        "summary": "Formatting & Readability",
+    }
+    for label, group in groups.items():
+        variant = copy.deepcopy(resume)
+        variant["sections"] = [x for x in variant["sections"] if x not in group]
+        _, after = scores(variant)
+        moved = [k for k, v in after.items() if v != base[k]]
+        check(f"the {label} section is owned by {owners[label]}",
+              moved == [owners[label]], f"moved: {moved}")
+
+
+# ---------------------------------------------------------------------------
 # 7. Job matching
 # ---------------------------------------------------------------------------
 def test_job_match() -> None:
@@ -728,6 +797,7 @@ def main() -> int:
     test_rag()
     test_experience_levels()
     test_ats()
+    test_no_double_counting()
     test_job_match()
     test_full_pipeline(rate_limited)
     test_streaming()

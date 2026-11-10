@@ -19,19 +19,32 @@ rules gives three properties an LLM cannot:
 Scoring model (total = 100)
 ---------------------------
 =========================  =====  =========================================
-Component                  Max    What it measures
+Component                  Max    What it owns
 =========================  =====  =========================================
-Contact Information           10  Can an ATS extract who you are and reach you
-Resume Sections               10  Are the expected sections present and labelled
-Skills Breadth                12  How many distinct, recognised skills appear
+Contact Information           10  Name, email, phone, LinkedIn, GitHub link
+Skills                        15  Skills section + how many and how varied
 Target Role Relevance         18  Overlap with the skills the target role needs
 Job Description Keywords      20  Overlap with THIS job description's keywords
-Experience & Projects         10  Is there concrete evidence of building things
-Quantifiable Achievements      5  Is impact expressed with numbers
-Education                      5  Is the degree parseable
-Formatting & Readability       5  Bullets, action verbs, sensible length
+Experience & Projects         14  Experience/Projects section + the entries
+Education                      8  Education section + degree and marks
+Quantifiable Achievements      5  Achievements section + quantified impact
+Formatting & Readability       5  Summary section, bullets, verbs, length
 GitHub Profile Evidence        5  Public code backing up the claims
 =========================  =====  =========================================
+
+One fact, one component
+-----------------------
+Every fact about the resume is scored by exactly ONE component. An earlier
+version had a separate "Resume Sections" component that awarded points for
+having an Education section, a Skills section and so on -- and then the
+Education, Skills and Experience components awarded points for the same
+sections again. The same fact moved the total twice, which made the score
+impossible to reason about.
+
+Section presence now lives inside the component that owns that content: having
+a labelled Education section is part of the Education score, a labelled Skills
+section is part of the Skills score, and so on. The Summary section is a
+structural signal, so it sits with Formatting & Readability.
 
 The first nine components look only at the resume, because that is all a real
 ATS receives. GitHub is included as a small, clearly separated component so
@@ -65,15 +78,16 @@ from skills_data import extract_skills, skill_category, sort_skills
 # ---------------------------------------------------------------------------
 # Component weights. Change them here and nowhere else.
 # ---------------------------------------------------------------------------
+# Each component owns a distinct set of facts about the resume. No fact is
+# scored by two components -- see the note under "One fact, one component".
 WEIGHTS: Dict[str, int] = {
     "contact_information": 10,
-    "resume_sections": 10,
-    "skills_breadth": 12,
+    "skills": 15,
     "role_relevance": 18,
     "jd_keyword_match": 20,
-    "experience_projects": 10,
+    "experience_projects": 14,
+    "education": 8,
     "quantifiable_achievements": 5,
-    "education": 5,
     "formatting_readability": 5,
     "github_evidence": 5,
 }
@@ -137,72 +151,41 @@ def _score_contact(resume: dict) -> Dict[str, object]:
                       found, {"missing": missing})
 
 
-def _score_sections(resume: dict) -> Dict[str, object]:
-    sections = set(resume.get("sections") or [])
-    # An ATS looks for labelled blocks. Weighted by how essential each is.
-    checks = [
-        ("skills", 3, "Skills"),
-        ("education", 2, "Education"),
-        ("summary", 1, "Summary / Objective"),
-    ]
-    score = 0.0
-    found, missing = [], []
-    for key, points, label in checks:
-        if key in sections:
-            score += points
-            found.append(f"{label} section found")
-        else:
-            missing.append(label)
-
-    # Experience OR projects -- a student with strong projects is not penalised
-    # for having no formal work experience.
-    if "experience" in sections or "projects" in sections:
-        score += 3
-        found.append("Experience and/or Projects section found")
-    else:
-        missing.append("Experience or Projects")
-
-    if "certifications" in sections or "achievements" in sections:
-        score += 1
-        found.append("Certifications and/or Achievements section found")
-    else:
-        missing.append("Certifications or Achievements")
-
-    reason = (f"{len(found)} of 5 expected resume sections were detected."
-              + (f" Missing: {', '.join(missing)}." if missing else
-                 " Every expected section is present."))
-    return _component("resume_sections", "Resume Sections", score, reason, found,
-                      {"detected": sorted(sections), "missing": missing})
-
-
-def _score_skills_breadth(resume: dict, level: dict) -> Dict[str, object]:
+def _score_skills(resume: dict, level: dict) -> Dict[str, object]:
+    """
+    Owns everything about the skills list: whether the section is labelled, how
+    many skills were recognised, and how varied they are.
+    """
     skills: List[str] = resume.get("skills") or []
     categories = {skill_category(s) for s in skills}
+    has_section = "skills" in set(resume.get("sections") or [])
 
     skills_target = int(level["skills_for_full_breadth"])
     categories_target = int(level["categories_for_full_diversity"])
 
-    # Two thirds for how many skills, one third for how varied they are: a
-    # resume listing eighteen JavaScript libraries is narrower than one listing
-    # a language, a framework, a database and a deployment tool.
-    breadth_max = WEIGHTS["skills_breadth"] * 2 / 3
-    diversity_max = WEIGHTS["skills_breadth"] - breadth_max
-    breadth = min(1.0, len(skills) / skills_target) * breadth_max
-    diversity = min(1.0, len(categories) / categories_target) * diversity_max
+    # 3 for a labelled section an ATS can find, then 8 for how many skills and
+    # 4 for how varied they are: a resume listing fifteen JavaScript libraries
+    # is narrower than one listing a language, a framework, a database and a
+    # deployment tool.
+    section_points = 3.0 if has_section else 0.0
+    breadth = min(1.0, len(skills) / skills_target) * 8.0
+    diversity = min(1.0, len(categories) / categories_target) * 4.0
 
     declared = (resume.get("skills_detail") or {}).get("declared") or []
     reason = (
+        f"{'Skills section found. ' if has_section else 'No labelled skills section. '}"
         f"{len(skills)} recognised skills across {len(categories)} categories. "
         f"At {level['label']} level, {skills_target} skills and {categories_target} "
-        f"categories earn full marks. {len(declared)} are listed in an explicit "
-        f"skills section."
+        f"categories earn full marks. {len(declared)} are listed in the skills section."
     )
-    return _component("skills_breadth", "Skills Breadth", breadth + diversity, reason,
-                      skills, {"categories": sorted(categories),
-                               "declared_count": len(declared),
-                               "total_count": len(skills),
-                               "skills_target": skills_target,
-                               "categories_target": categories_target})
+    evidence = ([f"Skills section found"] if has_section else []) + skills
+    return _component("skills", "Skills", section_points + breadth + diversity, reason,
+                      evidence, {"categories": sorted(categories),
+                                 "declared_count": len(declared),
+                                 "total_count": len(skills),
+                                 "has_section": has_section,
+                                 "skills_target": skills_target,
+                                 "categories_target": categories_target})
 
 
 def _score_role_relevance(resume: dict, role: dict, level: dict) -> Dict[str, object]:
@@ -281,8 +264,11 @@ def _score_jd_keywords(resume: dict, jd_text: str, jd_source: str,
 def _score_experience_projects(resume: dict, level: dict) -> Dict[str, object]:
     experience = resume.get("experience") or []
     projects = resume.get("projects") or []
+    sections = set(resume.get("sections") or [])
+    has_section = "experience" in sections or "projects" in sections
 
-    # How the 10 points divide depends on career stage. A fresher with no
+    # 4 points for a labelled section an ATS can find, then 10 for the entries.
+    # How those 10 divide depends on career stage. A fresher with no
     # formal employment would otherwise forfeit half this component by
     # definition, so projects carry most of it for them.
     experience_max = float(level["experience_points"])
@@ -297,25 +283,37 @@ def _score_experience_projects(resume: dict, level: dict) -> Dict[str, object]:
         detail_points = min(1.0, with_skills / 2.0) * (max_points * 0.4)
         return count_points + detail_points
 
-    score = side_score(experience, experience_max) + side_score(projects, project_max)
-    evidence = [e["text"][:160] for e in (experience + projects)[:6]]
+    section_points = 4.0 if has_section else 0.0
+    score = (section_points + side_score(experience, experience_max)
+             + side_score(projects, project_max))
+    evidence = ([f"Experience and/or Projects section found"] if has_section else []) + \
+        [e["text"][:160] for e in (experience + projects)[:6]]
     reason = (
+        f"{'Section found. ' if has_section else 'No labelled Experience or Projects section. '}"
         f"{len(experience)} experience entr{'y' if len(experience) == 1 else 'ies'} and "
         f"{len(projects)} project entr{'y' if len(projects) == 1 else 'ies'} were parsed. "
         f"{sum(1 for e in experience + projects if e.get('skills'))} of them name "
-        f"specific technologies. At {level['label']} level these are worth up to "
+        f"specific technologies. At {level['label']} level the entries are worth up to "
         f"{experience_max:.0f} and {project_max:.0f} points respectively."
     )
     return _component("experience_projects", "Experience & Projects", score, reason, evidence,
                       {"experience_count": len(experience), "project_count": len(projects),
+                       "has_section": has_section,
                        "experience_max": experience_max, "project_max": project_max})
 
 
 def _score_achievements(resume: dict, level: dict) -> Dict[str, object]:
     achievements = [a for a in (resume.get("achievements") or []) if a.get("quantified")]
+    sections = set(resume.get("sections") or [])
+    has_section = "achievements" in sections or "certifications" in sections
     target = int(level["achievements_for_full_marks"])
-    score = min(1.0, len(achievements) / target) * WEIGHTS["quantifiable_achievements"]
+
+    # 1 point for a labelled Achievements or Certifications section, 4 for the
+    # quantified lines themselves.
+    section_points = 1.0 if has_section else 0.0
+    score = section_points + min(1.0, len(achievements) / target) * 4.0
     reason = (
+        f"{'Achievements/Certifications section found. ' if has_section else ''}"
         f"{len(achievements)} quantified achievement(s) detected. At "
         f"{level['label']} level, {target} earn full marks. Quantified means the "
         f"line contains a measurable figure such as a percentage, a multiplier or a count."
@@ -324,13 +322,24 @@ def _score_achievements(resume: dict, level: dict) -> Dict[str, object]:
         "(percentages, counts, time saved) is the fastest way to gain these points."
     )
     return _component("quantifiable_achievements", "Quantifiable Achievements", score, reason,
-                      [a["text"][:160] for a in achievements],
-                      {"count": len(achievements), "target": target})
+                      ([f"Achievements/Certifications section found"] if has_section else [])
+                      + [a["text"][:160] for a in achievements],
+                      {"count": len(achievements), "target": target,
+                       "has_section": has_section})
 
 
 def _score_education(resume: dict) -> Dict[str, object]:
+    """Owns everything about education: the section, the degree and the marks."""
     education = resume.get("education") or []
+    has_section = "education" in set(resume.get("sections") or [])
     score, evidence, notes = 0.0, [], []
+
+    # 3 for a labelled section an ATS can find, 5 for what is inside it.
+    if has_section:
+        score += 3
+        evidence.append("Education section found")
+    else:
+        notes.append("no labelled education section")
 
     if education:
         score += 2
@@ -354,14 +363,22 @@ def _score_education(resume: dict) -> Dict[str, object]:
 
     reason = (f"{len(education)} education entr{'y' if len(education) == 1 else 'ies'} parsed."
               + (f" Points were lost for: {', '.join(notes)}." if notes else
-                 " Degree and academic score were both detected."))
+                 " Section, degree and academic score were all detected."))
     return _component("education", "Education", score, reason, evidence,
-                      {"entries": len(education)})
+                      {"entries": len(education), "has_section": has_section})
 
 
 def _score_readability(resume: dict) -> Dict[str, object]:
     signals = resume.get("readability") or {}
     score, evidence, issues = 0.0, [], []
+
+    # A Summary/Objective is a structural signal rather than content, so it is
+    # scored here rather than alongside skills or experience.
+    if "summary" in set(resume.get("sections") or []):
+        score += 1
+        evidence.append("Summary / Objective section found")
+    else:
+        issues.append("no Summary or Objective section")
 
     if signals.get("uses_bullets"):
         score += 2
@@ -378,15 +395,17 @@ def _score_readability(resume: dict) -> Dict[str, object]:
 
     words = int(signals.get("word_count") or 0)
     low, high = IDEAL_WORD_RANGE
-    if low <= words <= high:
-        score += 1
+    avg_bullet = float(signals.get("avg_bullet_words") or 0)
+    length_ok = low <= words <= high
+    bullets_scannable = 0 < avg_bullet <= 30
+
+    # Length and bullet length are two halves of one "is it scannable" point.
+    score += 0.5 * length_ok + 0.5 * bullets_scannable
+    if length_ok:
         evidence.append(f"Length is {words} words, within the {low}-{high} word target")
     else:
         issues.append(f"length is {words} words, outside the {low}-{high} word target")
-
-    avg_bullet = float(signals.get("avg_bullet_words") or 0)
-    if 0 < avg_bullet <= 30:
-        score += 1
+    if bullets_scannable:
         evidence.append(f"Bullets average {avg_bullet} words, which stays scannable")
     elif avg_bullet > 30:
         issues.append(f"bullets average {avg_bullet} words, which is long for a scan")
@@ -469,8 +488,7 @@ def score_resume(
 
     components = [
         _score_contact(resume),
-        _score_sections(resume),
-        _score_skills_breadth(resume, level),
+        _score_skills(resume, level),
         _score_role_relevance(resume, role, level),
         _score_jd_keywords(resume, jd_text, jd_source, level),
         _score_experience_projects(resume, level),
