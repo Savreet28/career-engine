@@ -166,5 +166,8 @@ export const PIPELINE_STAGES = [
   { id: 'rag_retrieval', label: 'Retrieving job-description evidence' },
   { id: 'ats_score', label: 'Calculating ATS score' },
   { id: 'job_match', label: 'Matching skills against requirements' },
+  { id: 'role_fit', label: 'Comparing other roles' },
+  { id: 'roadmap', label: 'Building your roadmap' },
+  { id: 'interview', label: 'Selecting interview questions' },
   { id: 'summary', label: 'Preparing summary' },
 ]

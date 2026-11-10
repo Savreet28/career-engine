@@ -50,6 +50,10 @@ RAG_TOP_K = int(_clean(os.getenv("RAG_TOP_K")) or 8)
 # than the display slice: a handful of chunks names too few skills to score
 # coverage against reliably.
 RAG_DERIVATION_TOP_K = int(_clean(os.getenv("RAG_DERIVATION_TOP_K")) or 24)
+# Depth used when sweeping every role for the recommendation ranking. Shallower
+# than the headline match: the sweep needs a reliable ordering, not a full audit
+# trail for each of the six roles.
+RAG_RECOMMENDATION_TOP_K = int(_clean(os.getenv("RAG_RECOMMENDATION_TOP_K")) or 14)
 CHUNK_MAX_WORDS = int(_clean(os.getenv("CHUNK_MAX_WORDS")) or 70)
 CHUNK_OVERLAP_WORDS = int(_clean(os.getenv("CHUNK_OVERLAP_WORDS")) or 15)
 

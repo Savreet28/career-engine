@@ -6,6 +6,9 @@ import LoadingStages from './components/LoadingStages.jsx'
 import ScoreCard from './components/ScoreCard.jsx'
 import ATSBreakdown from './components/ATSBreakdown.jsx'
 import JobMatch from './components/JobMatch.jsx'
+import RoleFit from './components/RoleFit.jsx'
+import Roadmap from './components/Roadmap.jsx'
+import InterviewPrep from './components/InterviewPrep.jsx'
 import KeySkills from './components/KeySkills.jsx'
 import ResumeInsights from './components/ResumeInsights.jsx'
 import GitHubInsights from './components/GitHubInsights.jsx'
@@ -17,6 +20,9 @@ const TABS = [
   { id: 'overview', label: 'Overview' },
   { id: 'ats', label: 'ATS Breakdown' },
   { id: 'match', label: 'Job Match' },
+  { id: 'roadmap', label: 'Roadmap' },
+  { id: 'interview', label: 'Interview Prep' },
+  { id: 'rolefit', label: 'Role Fit' },
   { id: 'sources', label: 'Resume & GitHub' },
 ]
 
@@ -267,6 +273,11 @@ export default function App() {
             )}
             {tab === 'ats' && <ATSBreakdown ats={result.ats} />}
             {tab === 'match' && <JobMatch match={result.job_match} />}
+            {tab === 'roadmap' && <Roadmap roadmap={result.roadmap} />}
+            {tab === 'interview' && <InterviewPrep prep={result.interview_prep} />}
+            {tab === 'rolefit' && (
+              <RoleFit recommendations={result.role_recommendations} />
+            )}
             {tab === 'sources' && (
               <div className="space-y-5">
                 <ResumeInsights resume={result.resume} />

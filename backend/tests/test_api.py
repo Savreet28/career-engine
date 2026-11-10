@@ -504,6 +504,211 @@ def test_job_match() -> None:
 
 
 # ---------------------------------------------------------------------------
+# 7b. Role recommendations (Objective 3)
+# ---------------------------------------------------------------------------
+def test_role_recommendations() -> None:
+    section("7b. Role recommendations")
+    response = requests.post(f"{BASE}/api/recommend-roles", files=resume_file(),
+                             data={"role_id": "frontend_developer",
+                                   "experience_level": "fresher"}, timeout=120)
+    if not check("POST /api/recommend-roles returns 200",
+                 response.status_code == 200, response.text[:200]):
+        return
+    data = response.json()
+    roles = data["roles"]
+
+    check("every role in the catalogue is scored", len(roles) == 6, str(len(roles)))
+    check("the target role is flagged exactly once",
+          sum(1 for r in roles if r["is_target"]) == 1)
+    check("ranks are 1..n with no gaps",
+          [r["rank"] for r in roles] == list(range(1, len(roles) + 1)),
+          str([r["rank"] for r in roles]))
+
+    # The ranking must track core fit, not the experience-adjusted score. At
+    # fresher level the score component saturates, so sorting by it would put
+    # a 62%-coverage role above a 67% one.
+    coverages = [r["core_coverage"] for r in roles]
+    check("roles are ordered by raw core coverage, highest first",
+          coverages == sorted(coverages, reverse=True), str(coverages))
+    check("the ranking basis is declared in the response",
+          data.get("ranked_by") == "core_coverage", str(data.get("ranked_by")))
+
+    check("each row reports matched and total core requirements",
+          all(0 <= r["core_matched"] <= r["core_total"] for r in roles))
+    check("core coverage matches the matched/total figures",
+          all(abs(r["core_coverage"] - r["core_matched"] / r["core_total"]) < 0.01
+              for r in roles if r["core_total"]))
+    check("the headline names the best-fitting role",
+          any(r["title"] in data["headline"] for r in roles), data["headline"])
+
+    # Same inputs, same ranking -- there is no model involved.
+    again = requests.post(f"{BASE}/api/recommend-roles", files=resume_file(),
+                          data={"role_id": "frontend_developer",
+                                "experience_level": "fresher"}, timeout=120).json()
+    check("the ranking is deterministic",
+          json.dumps(data, sort_keys=True) == json.dumps(again, sort_keys=True))
+
+    # A pasted job description must NOT leak into the other five roles.
+    with_jd = requests.post(f"{BASE}/api/analyze", files=resume_file(),
+                            data={"role_id": "frontend_developer",
+                                  "experience_level": "fresher",
+                                  "job_description": "Only COBOL and Fortran required."},
+                            timeout=120).json()["role_recommendations"]
+    check("a pasted job description does not contaminate the role sweep",
+          [r["core_coverage"] for r in with_jd["roles"]] == coverages,
+          "the sweep must stay role-generic for a fair comparison")
+
+    check("unknown role -> HTTP 400",
+          requests.post(f"{BASE}/api/recommend-roles", files=resume_file(),
+                        data={"role_id": "nope"}, timeout=60).status_code == 400)
+
+
+# ---------------------------------------------------------------------------
+# 7c. Learning roadmap (Objective 3)
+# ---------------------------------------------------------------------------
+def test_roadmap() -> None:
+    section("7c. Learning roadmap")
+    from skill_graph import PREREQUISITES, all_prerequisites_of, depth_of, validate_graph
+
+    problems = validate_graph()
+    check("the prerequisite graph is well formed", not problems, str(problems))
+    check("the graph has meaningful coverage", len(PREREQUISITES) >= 50,
+          str(len(PREREQUISITES)))
+
+    response = requests.post(f"{BASE}/api/roadmap", files=resume_file("weak_resume.docx"),
+                             data={"role_id": "ai_ml_engineer",
+                                   "experience_level": "fresher"}, timeout=120)
+    if not check("POST /api/roadmap returns 200", response.status_code == 200,
+                 response.text[:200]):
+        return
+    plan = response.json()
+    phases = plan["phases"]
+    steps = [s for p in phases for s in p["steps"]]
+
+    check("a weak resume produces a multi-phase plan", len(phases) >= 2, str(len(phases)))
+    check("every step names a skill and a reason",
+          all(s["skill"] and s["why"] for s in steps))
+    check("no step is listed twice", len({s["skill"] for s in steps}) == len(steps))
+    check("no time estimates are invented",
+          not any(k in s for s in steps for k in ("weeks", "hours", "duration", "effort")),
+          "the plan must not fabricate how long a skill takes")
+
+    # The plan must be self-contained: nothing shown may depend on something
+    # that is missing and absent from the plan.
+    check("no step is blocked by a skill missing from the plan",
+          all(not s["blockers_outside_plan"] for s in steps),
+          str([(s["skill"], s["blockers_outside_plan"])
+               for s in steps if s["blockers_outside_plan"]]))
+
+    # Prerequisites must come before the skills that need them.
+    position = {s["skill"]: i for i, s in enumerate(steps)}
+    violations = [
+        (s["skill"], prereq)
+        for s in steps
+        for prereq in all_prerequisites_of(s["skill"])
+        if prereq in position and position[prereq] > position[s["skill"]]
+    ]
+    check("prerequisites always appear before the skills that need them",
+          not violations, str(violations[:4]))
+
+    check("the first phase starts with an entry-level skill",
+          phases[0]["steps"][0]["depth"] == 0 or
+          not phases[0]["steps"][0]["blockers_outside_plan"],
+          str(phases[0]["steps"][0]["skill"]))
+    check("documentation links, where given, are official https URLs",
+          all(s["docs"].startswith("https://") for s in steps if s.get("docs")))
+
+    # A strong resume should need far less work than a weak one.
+    strong = requests.post(f"{BASE}/api/roadmap", files=resume_file(),
+                           data={"role_id": "ai_ml_engineer",
+                                 "experience_level": "fresher"}, timeout=120).json()
+    check("a strong resume yields a shorter plan than a weak one",
+          strong["total_steps"] < plan["total_steps"],
+          f'strong={strong["total_steps"]} weak={plan["total_steps"]}')
+
+    again = requests.post(f"{BASE}/api/roadmap", files=resume_file("weak_resume.docx"),
+                          data={"role_id": "ai_ml_engineer",
+                                "experience_level": "fresher"}, timeout=120).json()
+    check("the roadmap is deterministic",
+          json.dumps(plan, sort_keys=True) == json.dumps(again, sort_keys=True))
+
+
+# ---------------------------------------------------------------------------
+# 7d. Interview preparation (Objective 3)
+# ---------------------------------------------------------------------------
+def test_interview_prep() -> None:
+    section("7d. Interview preparation")
+    from experience_levels import ORDERED_LEVEL_IDS
+    from interview_prep import load_questions
+    from skills_data import ROLES, SKILLS
+
+    bank = load_questions()
+    check("the question bank is populated", len(bank) >= 50, str(len(bank)))
+    check("every tagged skill exists in the taxonomy",
+          all(s in SKILLS for q in bank for s in q.get("skills") or []),
+          str(sorted({s for q in bank for s in q.get("skills") or [] if s not in SKILLS})))
+    check("every difficulty maps to an experience level",
+          all(q["difficulty"] in ORDERED_LEVEL_IDS for q in bank),
+          str(sorted({q["difficulty"] for q in bank} - set(ORDERED_LEVEL_IDS))))
+    check("question ids are unique",
+          len({q["id"] for q in bank}) == len(bank))
+    check("every question says what the interviewer is checking",
+          all(q.get("what_they_are_checking") for q in bank))
+
+    # The decision was: no model answers. Enforce it.
+    check("no question ships a model answer",
+          not any(k in q for q in bank for k in ("answer", "model_answer", "solution")),
+          "answers were deliberately excluded to avoid stating something subtly wrong")
+
+    # Every skill that is core for some role must be covered.
+    core = set()
+    for role in ROLES:
+        core |= set(role["core_skills"])
+    covered = {s for q in bank for s in q.get("skills") or []}
+    check("every core skill across all roles has at least one question",
+          core <= covered, str(sorted(core - covered)))
+
+    response = requests.post(f"{BASE}/api/interview-prep", files=resume_file(),
+                             data={"role_id": "ai_ml_engineer",
+                                   "experience_level": "fresher"}, timeout=120)
+    if not check("POST /api/interview-prep returns 200",
+                 response.status_code == 200, response.text[:200]):
+        return
+    prep = response.json()
+    questions = [q for g in prep["groups"] for q in g["questions"]]
+
+    check("questions are grouped", len(prep["groups"]) >= 2, str(len(prep["groups"])))
+    check("no question appears twice",
+          len({q["id"] for q in questions}) == len(questions))
+    check("questions are drawn from the bank",
+          {q["id"] for q in questions} <= {b["id"] for b in bank})
+
+    # A fresher must not be shown senior-level questions unless that skill has
+    # nothing easier -- and those must be flagged as a stretch.
+    unflagged = [q["id"] for q in questions
+                 if q["difficulty"] != "fresher" and not q["stretch"]]
+    check("harder questions shown to a fresher are flagged as a stretch",
+          not unflagged, str(unflagged))
+
+    # The gaps group must only ever contain skills the candidate is missing.
+    gaps = next((g for g in prep["groups"] if g["id"] == "gaps"), None)
+    if gaps:
+        missing = set(requests.post(f"{BASE}/api/job-match", files=resume_file(),
+                                    data={"role_id": "ai_ml_engineer",
+                                          "experience_level": "fresher"},
+                                    timeout=120).json()["job_match"]["core_skills"]["missing"])
+        check("the gaps group only covers skills the candidate is missing",
+              all(q["matched_skill"] in missing for q in gaps["questions"]),
+              str([q["matched_skill"] for q in gaps["questions"]]))
+
+    again = requests.post(f"{BASE}/api/interview-prep", files=resume_file(),
+                          data={"role_id": "ai_ml_engineer",
+                                "experience_level": "fresher"}, timeout=120).json()
+    check("question selection is deterministic",
+          json.dumps(prep, sort_keys=True) == json.dumps(again, sort_keys=True))
+
+
+# ---------------------------------------------------------------------------
 # 8. Full pipeline
 # ---------------------------------------------------------------------------
 def test_full_pipeline(rate_limited: bool) -> None:
@@ -517,9 +722,10 @@ def test_full_pipeline(rate_limited: bool) -> None:
     result = response.json()
 
     check("response contains every pipeline section",
-          {"resume", "github", "ats", "job_match", "rag", "summary", "timings_ms", "stages"}
-          <= set(result))
-    check("all six stages reported", len({s["stage"] for s in result["stages"]}) == 6,
+          {"resume", "github", "ats", "job_match", "rag", "summary",
+           "role_recommendations", "roadmap", "interview_prep",
+           "timings_ms", "stages"} <= set(result))
+    check("all nine stages reported", len({s["stage"] for s in result["stages"]}) == 9,
           str({s["stage"] for s in result["stages"]}))
     check("the final stage is the rule-based summary",
           "summary" in {s["stage"] for s in result["stages"]},
@@ -799,6 +1005,9 @@ def main() -> int:
     test_ats()
     test_no_double_counting()
     test_job_match()
+    test_role_recommendations()
+    test_roadmap()
+    test_interview_prep()
     test_full_pipeline(rate_limited)
     test_streaming()
     test_summary(health)

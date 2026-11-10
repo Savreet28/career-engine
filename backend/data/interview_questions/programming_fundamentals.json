@@ -1,0 +1,138 @@
+{
+  "area": "Programming fundamentals",
+  "questions": [
+    {
+      "id": "py_mutable_default",
+      "question": "What happens if you use a mutable object, like a list, as a default argument in a Python function?",
+      "skills": [
+        "Python"
+      ],
+      "kind": "technical",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you know the default is created once when the function is defined, not on each call, so it persists between calls.",
+      "roles": []
+    },
+    {
+      "id": "py_list_vs_tuple",
+      "question": "When would you choose a tuple over a list in Python, and why?",
+      "skills": [
+        "Python"
+      ],
+      "kind": "conceptual",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you understand immutability and its consequences - hashability, safety as a dictionary key, and signalling intent.",
+      "roles": []
+    },
+    {
+      "id": "oop_inheritance_composition",
+      "question": "When would you use composition instead of inheritance?",
+      "skills": [
+        "Object-Oriented Programming"
+      ],
+      "kind": "conceptual",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you see inheritance as a tool with costs, not the default. Look for 'is-a' versus 'has-a' and tight coupling.",
+      "roles": []
+    },
+    {
+      "id": "oop_encapsulation_why",
+      "question": "What problem does encapsulation actually solve? Give an example from your own code.",
+      "skills": [
+        "Object-Oriented Programming"
+      ],
+      "kind": "conceptual",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you can explain a principle through something you built, rather than reciting a textbook definition.",
+      "roles": []
+    },
+    {
+      "id": "ds_hashmap_internals",
+      "question": "How does a hash map achieve average O(1) lookup, and when does it degrade?",
+      "skills": [
+        "Data Structures"
+      ],
+      "kind": "technical",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you understand hashing and collisions, and that worst case is O(n) when everything collides.",
+      "roles": []
+    },
+    {
+      "id": "ds_choose_structure",
+      "question": "You need to repeatedly find the smallest item in a changing collection. Which data structure would you use?",
+      "skills": [
+        "Data Structures"
+      ],
+      "kind": "technical",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you can map a requirement onto a structure - a heap here - rather than reaching for a list and sorting repeatedly.",
+      "roles": []
+    },
+    {
+      "id": "algo_complexity_tradeoff",
+      "question": "Explain a time where you traded memory for speed, or the reverse.",
+      "skills": [
+        "Algorithms"
+      ],
+      "kind": "project",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether complexity is something you have actually reasoned about in practice, not just memorised as Big-O notation.",
+      "roles": []
+    },
+    {
+      "id": "algo_explain_approach",
+      "question": "Walk me through how you would find duplicates in a large list, and give the complexity of your approach.",
+      "skills": [
+        "Algorithms",
+        "Data Structures"
+      ],
+      "kind": "technical",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Your problem-solving process out loud. They want to hear you consider more than one approach and justify the choice.",
+      "roles": []
+    },
+    {
+      "id": "testing_what_to_test",
+      "question": "You have written a function. What do you write tests for, and what do you not bother testing?",
+      "skills": [
+        "Software Testing"
+      ],
+      "kind": "conceptual",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you test behaviour and edge cases rather than chasing coverage numbers.",
+      "roles": []
+    },
+    {
+      "id": "testing_bug_process",
+      "question": "A bug reaches production. Walk me through what you do.",
+      "skills": [
+        "Software Testing"
+      ],
+      "kind": "behavioural",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you reproduce the bug and write a failing test before fixing it, rather than patching and hoping.",
+      "roles": []
+    },
+    {
+      "id": "git_merge_conflict",
+      "question": "Two people edited the same file. How do you resolve the conflict, and how do you avoid it next time?",
+      "skills": [
+        "Git"
+      ],
+      "kind": "technical",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Practical Git fluency, plus whether you think about smaller commits and communication as prevention.",
+      "roles": []
+    },
+    {
+      "id": "git_commit_habits",
+      "question": "What makes a good commit message, and why does it matter?",
+      "skills": [
+        "Git"
+      ],
+      "kind": "conceptual",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you see version control as communication with future readers, not just a save button.",
+      "roles": []
+    }
+  ]
+}

@@ -48,6 +48,9 @@ from models import GitHubRequest, HealthOut, RoleOut
 from rag import get_retriever
 from rag.ingest import load_job_descriptions
 from resume_parser import ResumeParseError, parse_resume
+from interview_prep import build_interview_prep
+from roadmap import build_roadmap
+from role_recommender import recommend_roles
 from summary_builder import build_summary
 from skills_data import ROLES, ROLES_BY_ID
 
@@ -369,7 +372,30 @@ def run_pipeline(
     yield "stage", _stage("job_match", "Matching skills against requirements", "done",
                           ms=mark("job_match"), detail=f"{match['score']}/{match['max_score']}")
 
-    # -- 6. summary --------------------------------------------------------
+    # -- 6. role recommendations ------------------------------------------
+    yield "stage", _stage("role_fit", "Comparing other roles", "running")
+    recommendations = recommend_roles(resume, github, retriever, str(role["id"]),
+                                      experience_level=experience_level)
+    yield "stage", _stage("role_fit", "Comparing other roles", "done",
+                          ms=mark("role_fit"),
+                          detail=f"{len(recommendations['roles'])} roles ranked")
+
+    # -- 7. learning roadmap ------------------------------------------------
+    yield "stage", _stage("roadmap", "Building your roadmap", "running")
+    learning_plan = build_roadmap(resume, match, role, github)
+    yield "stage", _stage("roadmap", "Building your roadmap", "done",
+                          ms=mark("roadmap"),
+                          detail=f"{learning_plan['total_steps']} steps across "
+                                 f"{len(learning_plan['phases'])} phases")
+
+    # -- 8. interview preparation -------------------------------------------
+    yield "stage", _stage("interview", "Selecting interview questions", "running")
+    interview = build_interview_prep(match, role, experience_level)
+    yield "stage", _stage("interview", "Selecting interview questions", "done",
+                          ms=mark("interview"),
+                          detail=f"{interview['total_questions']} questions selected")
+
+    # -- 9. summary --------------------------------------------------------
     yield "stage", _stage("summary", "Preparing summary", "running")
     summary = build_summary(ats, match, resume, github)
     yield "stage", _stage("summary", "Preparing summary", "done",
@@ -412,6 +438,9 @@ def run_pipeline(
             # break if the scoring components were ever reordered.
             "keyword_count": len(_component_details(ats, "jd_keyword_match").get("jd_keywords") or []),
         },
+        "role_recommendations": recommendations,
+        "roadmap": learning_plan,
+        "interview_prep": interview,
         "summary": summary,
         "timings_ms": {**timings, "total": round((time.perf_counter() - started) * 1000, 1)},
     }
@@ -629,6 +658,112 @@ async def api_job_match(
         "rag": {"query": retrieval["query"], "index": retrieval["index"],
                 "results": retrieval["results"][: config.RAG_TOP_K]},
     }
+
+
+@app.post("/api/recommend-roles", tags=["analysis"])
+async def api_recommend_roles(
+    resume: UploadFile = File(...),
+    role_id: str = Form(..., description="The role you are currently targeting"),
+    github_username: Optional[str] = Form(None),
+    experience_level: Optional[str] = Form(None),
+):
+    """
+    Objective 3: score the candidate against every role and rank them.
+
+    Useful on its own for showing that the ranking is produced by the same
+    matcher as the headline score, just run six times.
+    """
+    data, filename = await _read_resume(resume)
+    role = _resolve_role(role_id)
+    level_id = _resolve_experience_level(experience_level)
+    parsed = parse_resume(data, filename)
+
+    github = None
+    if github_username and github_username.strip():
+        try:
+            github = analyze_github(github_username)
+        except GitHubError as exc:
+            github = empty_analysis(str(exc))
+
+    return recommend_roles(parsed, github, get_retriever(), str(role["id"]),
+                           experience_level=level_id)
+
+
+@app.post("/api/roadmap", tags=["analysis"])
+async def api_roadmap(
+    resume: UploadFile = File(...),
+    role_id: str = Form(...),
+    github_username: Optional[str] = Form(None),
+    job_description: Optional[str] = Form(None),
+    experience_level: Optional[str] = Form(None),
+):
+    """
+    Objective 3: an ordered learning plan built from the gap analysis.
+
+    Phases come from a prerequisite graph plus how strongly the retrieved job
+    descriptions demanded each skill. There are no time estimates.
+    """
+    data, filename = await _read_resume(resume)
+    role = _resolve_role(role_id)
+    level_id = _resolve_experience_level(experience_level)
+    parsed = parse_resume(data, filename)
+
+    github = None
+    if github_username and github_username.strip():
+        try:
+            github = analyze_github(github_username)
+        except GitHubError as exc:
+            github = empty_analysis(str(exc))
+
+    jd_text, _, _ = _resolve_job_description(role, None, job_description)
+    retriever = get_retriever()
+    retrieval = retriever.retrieve_for_role(
+        role_title=str(role["title"]), role_id=str(role["id"]),
+        job_description_text=jd_text or None, top_k=config.RAG_DERIVATION_TOP_K,
+        seed_skills=list(role.get("core_skills") or [])[:8],
+    )
+    match = match_candidate_to_role(parsed, github, role, retrieval["results"],
+                                    jd_text=jd_text, experience_level=level_id)
+    return build_roadmap(parsed, match, role, github)
+
+
+@app.post("/api/interview-prep", tags=["analysis"])
+async def api_interview_prep(
+    resume: UploadFile = File(...),
+    role_id: str = Form(...),
+    github_username: Optional[str] = Form(None),
+    job_description: Optional[str] = Form(None),
+    experience_level: Optional[str] = Form(None),
+):
+    """
+    Objective 3: likely interview questions for this candidate and role.
+
+    Selected by skill tag from the local question bank, filtered to the
+    experience level, ordered by how strongly the job descriptions demanded
+    each skill. No model answers are provided -- each question states what the
+    interviewer is checking for.
+    """
+    data, filename = await _read_resume(resume)
+    role = _resolve_role(role_id)
+    level_id = _resolve_experience_level(experience_level)
+    parsed = parse_resume(data, filename)
+
+    github = None
+    if github_username and github_username.strip():
+        try:
+            github = analyze_github(github_username)
+        except GitHubError as exc:
+            github = empty_analysis(str(exc))
+
+    jd_text, _, _ = _resolve_job_description(role, None, job_description)
+    retrieval = get_retriever().retrieve_for_role(
+        role_title=str(role["title"]), role_id=str(role["id"]),
+        job_description_text=jd_text or None, top_k=config.RAG_DERIVATION_TOP_K,
+        seed_skills=list(role.get("core_skills") or [])[:8],
+    )
+    match = match_candidate_to_role(parsed, github, role, retrieval["results"],
+                                    jd_text=jd_text, experience_level=level_id)
+    return build_interview_prep(match, role, level_id)
 
 
 @app.post("/api/analyze", tags=["analysis"])

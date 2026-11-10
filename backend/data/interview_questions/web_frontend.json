@@ -1,0 +1,117 @@
+{
+  "area": "Frontend and the web",
+  "questions": [
+    {
+      "id": "js_var_let_const",
+      "question": "What is the difference between var, let and const, and which do you reach for by default?",
+      "skills": [
+        "JavaScript"
+      ],
+      "kind": "technical",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you understand scoping and hoisting, and that const does not make an object immutable.",
+      "roles": []
+    },
+    {
+      "id": "js_async_await",
+      "question": "Explain what happens when JavaScript hits an await. Does it block the page?",
+      "skills": [
+        "JavaScript"
+      ],
+      "kind": "conceptual",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you understand the event loop - that await yields rather than blocking the single thread.",
+      "roles": []
+    },
+    {
+      "id": "html_semantic",
+      "question": "Why use a <button> instead of a <div> with a click handler?",
+      "skills": [
+        "HTML",
+        "Web Accessibility"
+      ],
+      "kind": "conceptual",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you think about keyboard users and screen readers, not just what looks right visually.",
+      "roles": []
+    },
+    {
+      "id": "css_box_model",
+      "question": "An element is wider than you expected. How do you work out why?",
+      "skills": [
+        "CSS"
+      ],
+      "kind": "technical",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you know the box model and box-sizing, and that you debug in the browser rather than guessing.",
+      "roles": []
+    },
+    {
+      "id": "css_flex_vs_grid",
+      "question": "When would you use flexbox rather than grid?",
+      "skills": [
+        "CSS"
+      ],
+      "kind": "conceptual",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you see them as one-dimensional versus two-dimensional tools, rather than interchangeable.",
+      "roles": []
+    },
+    {
+      "id": "responsive_approach",
+      "question": "How do you make a layout work on a 320px phone and a wide desktop?",
+      "skills": [
+        "Responsive Design",
+        "CSS"
+      ],
+      "kind": "technical",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you design mobile-first with relative units, rather than bolting on breakpoints afterwards.",
+      "roles": []
+    },
+    {
+      "id": "react_state_vs_props",
+      "question": "What is the difference between state and props, and how do you decide where state should live?",
+      "skills": [
+        "React"
+      ],
+      "kind": "conceptual",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you understand one-way data flow and lifting state to the nearest common ancestor.",
+      "roles": []
+    },
+    {
+      "id": "react_useeffect_trap",
+      "question": "What goes wrong if you omit the dependency array in useEffect?",
+      "skills": [
+        "React"
+      ],
+      "kind": "technical",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you have actually debugged a render loop, rather than only read about hooks.",
+      "roles": []
+    },
+    {
+      "id": "react_key_prop",
+      "question": "Why does React want a key on list items, and why is the array index usually a poor choice?",
+      "skills": [
+        "React"
+      ],
+      "kind": "technical",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you understand reconciliation and what breaks when list order changes.",
+      "roles": []
+    },
+    {
+      "id": "ts_why_bother",
+      "question": "Your project works in JavaScript. What does TypeScript add that is worth the extra effort?",
+      "skills": [
+        "TypeScript"
+      ],
+      "kind": "conceptual",
+      "difficulty": "mid",
+      "what_they_are_checking": "Whether you can argue a tooling decision on its merits, including the costs.",
+      "roles": []
+    }
+  ]
+}

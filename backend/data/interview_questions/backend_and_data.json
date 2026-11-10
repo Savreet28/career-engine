@@ -1,0 +1,153 @@
+{
+  "area": "Backend, APIs and databases",
+  "questions": [
+    {
+      "id": "rest_verbs",
+      "question": "What is the difference between PUT and PATCH, and when does it actually matter?",
+      "skills": [
+        "REST APIs"
+      ],
+      "kind": "technical",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you know REST conventions and the idea of idempotency, not just that both 'update something'.",
+      "roles": []
+    },
+    {
+      "id": "rest_status_codes",
+      "question": "Your API receives a request for a record that does not exist. What status code do you return, and what if the user simply is not allowed to see it?",
+      "skills": [
+        "REST APIs"
+      ],
+      "kind": "technical",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you distinguish 404 from 403, and whether you have thought about leaking information through status codes.",
+      "roles": []
+    },
+    {
+      "id": "rest_design_endpoint",
+      "question": "Design the endpoints for a simple blog with posts and comments.",
+      "skills": [
+        "REST APIs",
+        "Database Design"
+      ],
+      "kind": "technical",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you can design resource-shaped URLs and nest relationships sensibly.",
+      "roles": []
+    },
+    {
+      "id": "sql_join_types",
+      "question": "What is the difference between an INNER JOIN and a LEFT JOIN? Give a case where the choice changes your answer.",
+      "skills": [
+        "SQL"
+      ],
+      "kind": "technical",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you understand joins well enough to predict row counts, rather than trying both until the output looks right.",
+      "roles": []
+    },
+    {
+      "id": "sql_slow_query",
+      "question": "A query that was fast is now slow. How do you investigate?",
+      "skills": [
+        "SQL",
+        "Database Design"
+      ],
+      "kind": "technical",
+      "difficulty": "mid",
+      "what_they_are_checking": "Whether you reach for EXPLAIN and indexes, and whether you consider data growth.",
+      "roles": []
+    },
+    {
+      "id": "sql_group_by",
+      "question": "Write a query to find the second-highest salary in a table. Explain your approach.",
+      "skills": [
+        "SQL"
+      ],
+      "kind": "technical",
+      "difficulty": "fresher",
+      "what_they_are_checking": "A classic. They want to see you reason about ties and edge cases, not recite one memorised solution.",
+      "roles": []
+    },
+    {
+      "id": "db_normalisation",
+      "question": "What is normalisation, and when would you deliberately denormalise?",
+      "skills": [
+        "Database Design"
+      ],
+      "kind": "conceptual",
+      "difficulty": "mid",
+      "what_they_are_checking": "Whether you treat it as a trade-off against read performance, rather than a rule to always follow.",
+      "roles": []
+    },
+    {
+      "id": "db_schema_design",
+      "question": "Design the tables for a system where students enrol in multiple courses.",
+      "skills": [
+        "Database Design",
+        "SQL"
+      ],
+      "kind": "technical",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you reach for a join table for the many-to-many relationship without being prompted.",
+      "roles": []
+    },
+    {
+      "id": "node_event_loop",
+      "question": "Node.js is single-threaded. How does it handle many simultaneous requests?",
+      "skills": [
+        "Node.js"
+      ],
+      "kind": "conceptual",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you understand non-blocking I/O and the event loop, and what happens when you block it.",
+      "roles": []
+    },
+    {
+      "id": "node_blocking",
+      "question": "What happens if you run a heavy CPU computation inside a Node request handler?",
+      "skills": [
+        "Node.js"
+      ],
+      "kind": "technical",
+      "difficulty": "mid",
+      "what_they_are_checking": "Whether you know it stalls every other request, and what the alternatives are.",
+      "roles": []
+    },
+    {
+      "id": "api_auth_approach",
+      "question": "How would you keep a user logged in across requests, and what are the risks?",
+      "skills": [
+        "Authentication",
+        "REST APIs"
+      ],
+      "kind": "conceptual",
+      "difficulty": "mid",
+      "what_they_are_checking": "Whether you can discuss sessions versus tokens and where each is stored, including the security implications.",
+      "roles": []
+    },
+    {
+      "id": "docker_why",
+      "question": "What problem does Docker solve that a requirements file does not?",
+      "skills": [
+        "Docker"
+      ],
+      "kind": "conceptual",
+      "difficulty": "mid",
+      "what_they_are_checking": "Whether you understand that it captures the whole environment, not just the language dependencies.",
+      "roles": []
+    },
+    {
+      "id": "fastapi_why",
+      "question": "Why might you choose FastAPI over Flask for a new service?",
+      "skills": [
+        "FastAPI",
+        "Python"
+      ],
+      "kind": "conceptual",
+      "difficulty": "mid",
+      "what_they_are_checking": "Whether you can compare frameworks on real properties - validation, async support, generated docs - rather than popularity.",
+      "roles": []
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "area": "Your projects and how you work",
+  "questions": [
+    {
+      "id": "proj_walk_through",
+      "question": "Pick the project you are proudest of and walk me through it.",
+      "skills": [],
+      "kind": "project",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Your ability to explain technical work clearly and own it. Practise a two-minute version and a ten-minute version.",
+      "roles": []
+    },
+    {
+      "id": "proj_hardest_bug",
+      "question": "What is the hardest bug you have debugged, and how did you find it?",
+      "skills": [],
+      "kind": "project",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Your debugging process. They want a method - reproduce, isolate, hypothesise - not luck.",
+      "roles": []
+    },
+    {
+      "id": "proj_why_that_stack",
+      "question": "Why did you choose that technology for your project? What would you use instead now?",
+      "skills": [],
+      "kind": "project",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether your choices were reasoned or copied from a tutorial, and whether you have reflected since.",
+      "roles": []
+    },
+    {
+      "id": "proj_what_would_change",
+      "question": "If you restarted that project tomorrow, what would you do differently?",
+      "skills": [],
+      "kind": "project",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Self-awareness. 'Nothing' is a bad answer; it suggests you have not reviewed your own work.",
+      "roles": []
+    },
+    {
+      "id": "proj_scale_question",
+      "question": "Your project works for 10 users. What breaks at 10,000?",
+      "skills": [
+        "System Design"
+      ],
+      "kind": "conceptual",
+      "difficulty": "mid",
+      "what_they_are_checking": "Whether you can reason about bottlenecks - database queries, memory, blocking work - without hand-waving.",
+      "roles": []
+    },
+    {
+      "id": "beh_disagreement",
+      "question": "Tell me about a time you disagreed with a teammate about a technical decision.",
+      "skills": [],
+      "kind": "behavioural",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you can disagree on technical grounds and then commit to the outcome either way.",
+      "roles": []
+    },
+    {
+      "id": "beh_learned_fast",
+      "question": "Tell me about something technical you had to learn quickly.",
+      "skills": [],
+      "kind": "behavioural",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Your learning method - and whether you can be useful before you are expert.",
+      "roles": []
+    },
+    {
+      "id": "beh_stuck",
+      "question": "You have been stuck on a problem for three hours. What do you do?",
+      "skills": [],
+      "kind": "behavioural",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you know when to ask for help. Both 'never ask' and 'ask immediately' are wrong answers.",
+      "roles": []
+    },
+    {
+      "id": "beh_feedback",
+      "question": "Tell me about feedback on your code that was hard to hear.",
+      "skills": [
+        "Code Review"
+      ],
+      "kind": "behavioural",
+      "difficulty": "mid",
+      "what_they_are_checking": "Whether you separate criticism of code from criticism of yourself.",
+      "roles": []
+    },
+    {
+      "id": "beh_missing_skill",
+      "question": "This role lists a skill you have not used. How would you handle that in the first month?",
+      "skills": [],
+      "kind": "behavioural",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Honesty plus a plan. Pretending you know it is the worst possible answer - prepare this one properly.",
+      "roles": []
+    }
+  ]
+}

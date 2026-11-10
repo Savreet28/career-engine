@@ -1,0 +1,236 @@
+{
+  "area": "Machine learning and data",
+  "questions": [
+    {
+      "id": "ml_overfitting",
+      "question": "Your model scores 99% on training data and 62% on test data. What is happening and what do you do?",
+      "skills": [
+        "Machine Learning",
+        "Model Evaluation"
+      ],
+      "kind": "technical",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you recognise overfitting and can name concrete remedies rather than just the word.",
+      "roles": []
+    },
+    {
+      "id": "ml_train_test_split",
+      "question": "Why do you need a test set at all? Why not evaluate on the data you trained on?",
+      "skills": [
+        "Machine Learning"
+      ],
+      "kind": "conceptual",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you genuinely understand generalisation. This is the question that separates tutorial-followers from people who think.",
+      "roles": []
+    },
+    {
+      "id": "ml_accuracy_trap",
+      "question": "Your fraud detector is 99% accurate. Why might that be terrible?",
+      "skills": [
+        "Machine Learning",
+        "Statistics"
+      ],
+      "kind": "conceptual",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you spot class imbalance and know to reach for precision, recall and the confusion matrix.",
+      "roles": []
+    },
+    {
+      "id": "ml_feature_leakage",
+      "question": "What is data leakage, and how might it sneak into a project without you noticing?",
+      "skills": [
+        "Machine Learning",
+        "Feature Engineering"
+      ],
+      "kind": "conceptual",
+      "difficulty": "mid",
+      "what_they_are_checking": "Whether you have been burned by it - scaling before splitting is the classic example.",
+      "roles": []
+    },
+    {
+      "id": "stats_pvalue",
+      "question": "What does a p-value actually tell you, and what does it not tell you?",
+      "skills": [
+        "Statistics"
+      ],
+      "kind": "conceptual",
+      "difficulty": "mid",
+      "what_they_are_checking": "Whether you can state it carefully. Most candidates overclaim here, and interviewers know it.",
+      "roles": []
+    },
+    {
+      "id": "stats_mean_median",
+      "question": "When would you report the median instead of the mean?",
+      "skills": [
+        "Statistics",
+        "Data Analysis"
+      ],
+      "kind": "conceptual",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you think about skew and outliers in real data rather than treating averages as interchangeable.",
+      "roles": []
+    },
+    {
+      "id": "stats_correlation",
+      "question": "Two variables correlate strongly. What can and cannot you conclude?",
+      "skills": [
+        "Statistics"
+      ],
+      "kind": "conceptual",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you can discuss confounding variables concretely, not just say 'correlation is not causation'.",
+      "roles": []
+    },
+    {
+      "id": "dl_why_deep",
+      "question": "When is a neural network the wrong choice for a problem?",
+      "skills": [
+        "Deep Learning",
+        "Machine Learning"
+      ],
+      "kind": "conceptual",
+      "difficulty": "mid",
+      "what_they_are_checking": "Whether you have judgement about data size and interpretability, rather than defaulting to deep learning.",
+      "roles": []
+    },
+    {
+      "id": "dl_backprop",
+      "question": "Explain backpropagation to someone who knows calculus but not machine learning.",
+      "skills": [
+        "Deep Learning"
+      ],
+      "kind": "conceptual",
+      "difficulty": "mid",
+      "what_they_are_checking": "Whether you understand it as the chain rule applied backwards through the network.",
+      "roles": []
+    },
+    {
+      "id": "pytorch_training_loop",
+      "question": "Walk me through the steps of a PyTorch training loop.",
+      "skills": [
+        "PyTorch",
+        "Deep Learning"
+      ],
+      "kind": "technical",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you have actually written one. They listen for zeroing gradients, and will ask what happens if you forget.",
+      "roles": []
+    },
+    {
+      "id": "pytorch_eval_mode",
+      "question": "Why do you call model.eval() before validating?",
+      "skills": [
+        "PyTorch"
+      ],
+      "kind": "technical",
+      "difficulty": "mid",
+      "what_they_are_checking": "Whether you know dropout and batch normalisation behave differently during training and inference.",
+      "roles": []
+    },
+    {
+      "id": "sklearn_pipeline",
+      "question": "Why wrap preprocessing and a model in a scikit-learn Pipeline rather than doing the steps separately?",
+      "skills": [
+        "Scikit-learn",
+        "Machine Learning"
+      ],
+      "kind": "technical",
+      "difficulty": "mid",
+      "what_they_are_checking": "Whether you understand it prevents leakage during cross-validation.",
+      "roles": []
+    },
+    {
+      "id": "sklearn_cross_val",
+      "question": "What does cross-validation give you that a single train/test split does not?",
+      "skills": [
+        "Scikit-learn",
+        "Model Evaluation"
+      ],
+      "kind": "conceptual",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you understand variance in the estimate, not just that it is 'more accurate'.",
+      "roles": []
+    },
+    {
+      "id": "nlp_text_to_numbers",
+      "question": "How do you turn a sentence into something a model can use?",
+      "skills": [
+        "NLP"
+      ],
+      "kind": "conceptual",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you can walk from tokenisation through bag-of-words to embeddings and say why each step improved on the last.",
+      "roles": []
+    },
+    {
+      "id": "nlp_embeddings_meaning",
+      "question": "What does it mean for two pieces of text to be 'close' in embedding space?",
+      "skills": [
+        "NLP",
+        "Embeddings"
+      ],
+      "kind": "conceptual",
+      "difficulty": "mid",
+      "what_they_are_checking": "Whether you understand semantic similarity geometrically, and can mention cosine similarity.",
+      "roles": []
+    },
+    {
+      "id": "pandas_groupby",
+      "question": "Explain what groupby does in Pandas, with an example from your own work.",
+      "skills": [
+        "Pandas",
+        "Data Analysis"
+      ],
+      "kind": "technical",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you have used it on real data, rather than only in a tutorial notebook.",
+      "roles": []
+    },
+    {
+      "id": "pandas_missing_data",
+      "question": "You find missing values in a dataset. What are your options, and how do you choose?",
+      "skills": [
+        "Pandas",
+        "Data Analysis"
+      ],
+      "kind": "conceptual",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you consider why the data is missing before deciding to drop or impute.",
+      "roles": []
+    },
+    {
+      "id": "dataviz_choose_chart",
+      "question": "You want to show how a value changed over twelve months. What chart, and why not a pie chart?",
+      "skills": [
+        "Data Visualization"
+      ],
+      "kind": "conceptual",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you choose a chart to fit the question rather than for decoration.",
+      "roles": []
+    },
+    {
+      "id": "dataviz_mislead",
+      "question": "How can a chart be technically accurate but still mislead?",
+      "skills": [
+        "Data Visualization"
+      ],
+      "kind": "conceptual",
+      "difficulty": "mid",
+      "what_they_are_checking": "Whether you think about truncated axes and scale, which matters when presenting to stakeholders.",
+      "roles": []
+    },
+    {
+      "id": "data_analysis_process",
+      "question": "You are handed a dataset you have never seen. What are your first three steps?",
+      "skills": [
+        "Data Analysis"
+      ],
+      "kind": "behavioural",
+      "difficulty": "fresher",
+      "what_they_are_checking": "Whether you have a real process - shape, types, missing values, distributions - before jumping to modelling.",
+      "roles": []
+    }
+  ]
+}

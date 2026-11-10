@@ -100,8 +100,8 @@ GitHub profile, and target job role to generate an ATS score.
 **Objective 2** — To implement a feature that uses RAG over job description data
 for explainable job/role matching.
 
-A third objective (career roadmap and interview preparation) is intentionally
-out of scope for this phase.
+**Objective 3** — role recommendations, a learning roadmap and interview
+preparation. All three are built.
 
 ---
 
@@ -215,7 +215,10 @@ the plain JSON endpoint and the streaming one.
 | 3 | Retrieve JD evidence | `rag/retriever.py` | Semantic search → relevant job-description chunks |
 | 4 | Score ATS | `ats_scorer.py` | 10 weighted components → 0–100 |
 | 5 | Match | `job_matcher.py` | Candidate evidence vs retrieved requirements → 0–100 |
-| 6 | Summarise | `summary_builder.py` | Three sections of bullets |
+| 6 | Rank roles | `role_recommender.py` | Scores all six roles and ranks them |
+| 7 | Build roadmap | `roadmap.py` | Orders the gaps into a phased learning plan |
+| 8 | Interview prep | `interview_prep.py` | Selects likely questions for this profile |
+| 9 | Summarise | `summary_builder.py` | Three sections of bullets |
 
 Each stage's real wall-clock duration is measured and reported — the UI shows
 genuine progress, not a simulated bar.
@@ -581,6 +584,107 @@ posting **you** pasted over a sample JD, then a "required skills" line over a
 
 ---
 
+## 10b. Feature 6b — Role recommendations (Objective 3)
+
+**File:** `backend/role_recommender.py`
+
+A student picks one target role, but their resume may fit another better. This
+runs the **same matcher** against all six roles and ranks them — no new
+machinery, just the Objective 2 pipeline executed six times.
+
+Two deliberate choices:
+
+**Every role is scored role-generically.** A pasted job description describes
+one specific job; feeding it into the other five roles would contaminate their
+requirements and make the comparison meaningless. So the sweep ignores it, and
+a role's number here can legitimately differ from the headline match score. A
+test asserts the pasted posting does not leak into the sweep.
+
+**Roles are ranked by raw core coverage, not by the match score.** The
+experience-level adjustment caps a component once the expected coverage is
+reached. That is correct for one role but flattens a comparison across six: at
+fresher level a candidate covering 62% and one covering 67% both hit the 50%
+target, both components max out, and the ranking then turns on incidental
+preferred skills. Ranking on unadjusted core coverage keeps the ordering
+meaningful; the adjusted score is still shown alongside.
+
+The whole sweep adds about 100 ms to the pipeline.
+
+---
+
+## 10c. Feature 6c — Learning roadmap (Objective 3)
+
+**Files:** `backend/skill_graph.py`, `backend/roadmap.py`
+
+The matcher produces a *set* of missing skills. A set is not actionable —
+"learn PyTorch" is useless advice to someone who does not yet know Python. The
+roadmap adds order, using three signals that are derived rather than invented:
+
+1. **Prerequisites** — an 87-edge graph in `skill_graph.py` saying what must
+   come first. Validated for cycles and unknown skills by the test suite.
+2. **Demand** — the RAG similarity scores the matcher already computed, so the
+   loudest requirements come first within a phase.
+3. **Requirement level** — core before preferred.
+
+**Three phases.** Foundations (what unlocks other work), Role-critical (the
+remaining must-haves), Differentiators (the nice-to-haves).
+
+**Hidden prerequisites are surfaced.** Someone missing PyTorch may also be
+missing Deep Learning, which no posting listed because it is assumed. Those are
+pulled into Phase 1, flagged as "assumed knowledge".
+
+**The plan is closed under prerequisites.** Each phase shows a limited number of
+steps, but the cap is relaxed wherever cutting a step would leave a later one
+blocked by something absent from the plan. Without this, a weak resume produced
+a plan whose Phase 2 said "blocked by Machine Learning" while Machine Learning
+appeared nowhere. A test asserts no step is ever blocked by a skill missing from
+the plan, and that prerequisites always precede their dependants.
+
+**No time estimates, deliberately.** "Learn Docker in 3 weeks" would be invented
+precision — nothing in this analysis supports such a number. Each skill instead
+carries a *depth*, computed from the graph, which is a real derived property. A
+test asserts no step contains a duration field.
+
+---
+
+## 10d. Feature 6d — Interview preparation (Objective 3)
+
+**Files:** `backend/interview_prep.py`, `backend/data/interview_questions/`
+
+65 questions, each tagged with the taxonomy skills it tests, a kind, and a
+difficulty matching the experience levels. Shown in three groups:
+
+* **Be ready to prove these** — skills you claim that the role requires.
+* **Be ready to handle these gaps** — requirements you cannot evidence yet. You
+  will probably still be asked, and an honest prepared answer beats an
+  improvised one.
+* **About you and your projects** — asked in almost every interview.
+
+### Why this does *not* use RAG
+
+Objective 2 uses semantic retrieval because the job-description corpus is large
+and written by other people — embeddings find relevance nobody labelled. The
+question bank is the opposite: small, and **we wrote the tags**. Looking up a
+tag we set ourselves is exact; embedding the questions and retrieving them by
+similarity would only be approximate.
+
+Using the weaker tool because it is the more impressive one would be the wrong
+call. RAG still does the *ordering* — questions are ranked by how strongly the
+retrieved job descriptions demanded the skill they test.
+
+### No model answers, deliberately
+
+Each question states **what the interviewer is checking for**, not a model
+answer. Writing 65 authoritative answers across 66 skills is a large surface
+area for stating something subtly wrong, and a wrong answer in revision
+material is worse than none. A test asserts no question ships an answer field.
+
+A question above your level is included only when that skill has nothing
+easier, and is flagged as a **stretch** — otherwise a skill whose only question
+is "mid" would vanish for a fresher.
+
+---
+
 ## 11. Feature 7 — The summary
 
 **File:** `backend/summary_builder.py`
@@ -672,6 +776,9 @@ Interactive docs: <http://localhost:8000/docs>
 | `GET` | `/api/health` | Status, version, GitHub token presence, RAG index stats |
 | `GET` | `/api/roles` | Supported target roles with their baseline skills |
 | `GET` | `/api/experience-levels` | Career stages and the coverage each expects |
+| `POST` | `/api/recommend-roles` | Score the candidate against every role and rank them |
+| `POST` | `/api/roadmap` | An ordered learning plan built from the gap analysis |
+| `POST` | `/api/interview-prep` | Likely interview questions for this profile |
 | `GET` | `/api/job-descriptions` | The knowledge base (optional `?role_id=`) |
 | `GET` | `/api/job-descriptions/{id}` | One full job description |
 | `GET` | `/api/rag/status` | Index size, dimensions, embedding backend, settings |
@@ -717,6 +824,10 @@ Career-Engine-Project/
 │   ├── github_analyzer.py       GitHub REST API → skill evidence
 │   ├── ats_scorer.py            Deterministic ATS scoring
 │   ├── job_matcher.py           Explainable job/role matching
+│   ├── role_recommender.py      Ranks the candidate across all roles (Obj 3)
+│   ├── skill_graph.py           Skill prerequisites + official docs (Obj 3)
+│   ├── roadmap.py               Phased learning plan (Obj 3)
+│   ├── interview_prep.py        Question selection from the bank (Obj 3)
 │   ├── summary_builder.py       Rule-based bullet summary (no LLM)
 │   ├── requirements.txt
 │   ├── requirements-dev.txt     Only needed to regenerate test fixtures
@@ -731,10 +842,11 @@ Career-Engine-Project/
 │   │
 │   ├── data/
 │   │   ├── job_descriptions/    12 JSON job descriptions (the RAG corpus)
+│   │   ├── interview_questions/ 65 tagged interview questions (Obj 3)
 │   │   └── vector_store/        Generated FAISS index (gitignored)
 │   │
 │   └── tests/
-│       ├── test_api.py          End-to-end test suite (174 checks)
+│       ├── test_api.py          End-to-end test suite (213 checks)
 │       ├── make_fixtures.py     Generates sample resumes
 │       └── fixtures/            Generated resume files (gitignored)
 │
@@ -758,6 +870,9 @@ Career-Engine-Project/
             ├── SummaryCard.jsx      The three-section bullet summary
             ├── ATSBreakdown.jsx
             ├── JobMatch.jsx
+            ├── RoleFit.jsx          Ranking across all six roles
+            ├── Roadmap.jsx          Phased learning plan
+            ├── InterviewPrep.jsx    Likely interview questions
             ├── KeySkills.jsx        Condensed top gaps / strengths
             ├── ResumeInsights.jsx
             └── GitHubInsights.jsx
@@ -823,7 +938,7 @@ python tests/make_fixtures.py       # first time only; needs requirements-dev.tx
 python tests/test_api.py
 ```
 
-**174 checks**, covering:
+**213 checks**, covering:
 
 * resume parsing in both formats, and every failure mode
 * PDF and DOCX of the same resume producing identical skills
