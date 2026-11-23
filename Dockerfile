@@ -23,12 +23,20 @@ FROM python:3.12-slim
 
 # Hugging Face Spaces runs the container as uid 1000, which cannot write to /.
 # Everything that needs to be written at runtime lives under /home/user.
-RUN useradd -m -u 1000 user
+# faiss and torch both link against libgomp, which the slim image omits.
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends libgomp1 \
+ && rm -rf /var/lib/apt/lists/* \
+ && useradd -m -u 1000 user
 ENV HOME=/home/user \
     PATH=/home/user/.local/bin:$PATH \
     HF_HOME=/home/user/.cache/huggingface \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
+
+# The vector index is rebuilt on first start if the manifest does not match
+# the running embedder, so the app directory must be writable by uid 1000.
+RUN mkdir -p /home/user/app && chown -R user:user /home/user
 
 WORKDIR /home/user/app
 
