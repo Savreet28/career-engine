@@ -31,13 +31,16 @@ from __future__ import annotations
 
 import json
 import logging
+import os
+import pathlib
 import time
 from contextlib import asynccontextmanager
 from typing import Any, Dict, Generator, List, Optional, Tuple
 
 from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
+from fastapi.staticfiles import StaticFiles
 
 import config
 from ats_scorer import score_resume
@@ -846,11 +849,53 @@ async def api_analyze_stream(
     )
 
 
+# ---------------------------------------------------------------------------
+# Serving the built frontend (production / deployment only)
+# ---------------------------------------------------------------------------
+#
+# In development the React app is served by Vite on :5173 and proxies /api to
+# this server, so nothing below applies. In a deployed container the frontend
+# is built to static files and served by this same process, which means the
+# browser talks to one origin and no CORS round-trip is needed.
+#
+# The catch-all route is registered LAST on purpose: FastAPI matches routes in
+# registration order, so every /api/... route above still wins.
+
+_dist_env = os.getenv("FRONTEND_DIST")
+FRONTEND_DIST = (pathlib.Path(_dist_env) if _dist_env
+                 else pathlib.Path(__file__).resolve().parent.parent / "frontend" / "dist")
+_INDEX = FRONTEND_DIST / "index.html"
+SERVE_FRONTEND = _INDEX.is_file()
+
+if SERVE_FRONTEND:
+    app.mount("/assets",
+              StaticFiles(directory=FRONTEND_DIST / "assets"),
+              name="assets")
+    logger.info("Serving built frontend from %s", FRONTEND_DIST)
+else:
+    logger.info("No frontend build found at %s; running API only.", FRONTEND_DIST)
+
+
 @app.get("/", include_in_schema=False)
 def root():
+    if SERVE_FRONTEND:
+        return FileResponse(_INDEX)
     return {
         "name": "Career Engine API",
         "version": VERSION,
         "docs": "/docs",
         "frontend": "http://localhost:5173",
     }
+
+
+@app.get("/{full_path:path}", include_in_schema=False)
+def spa_fallback(full_path: str):
+    """Hand any non-API path to the single-page app so client routing works."""
+    if not SERVE_FRONTEND:
+        raise HTTPException(status_code=404, detail="Not found")
+    candidate = (FRONTEND_DIST / full_path).resolve()
+    # Only serve files that genuinely live inside the build directory.
+    if (candidate.is_file()
+            and candidate.is_relative_to(FRONTEND_DIST.resolve())):
+        return FileResponse(candidate)
+    return FileResponse(_INDEX)

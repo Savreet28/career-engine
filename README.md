@@ -1,6 +1,18 @@
+---
+title: Career Engine
+emoji: 🎯
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+app_port: 7860
+pinned: false
+license: mit
+short_description: Explainable ATS scoring and RAG job matching. No LLM used.
+---
+
 # Career Engine
 
-A local web application that analyses a student's **resume**, **GitHub profile**
+A web application that analyses a student's **resume**, **GitHub profile**
 and **target job role** and returns two things: a transparent **ATS score**, and
 an **explainable job match** built with RAG over job-description data.
 
@@ -1023,3 +1035,72 @@ Scoped to the two objectives.
 | **First run is slow / seems stuck** | The embedding model is downloading (~90 MB), once. Watch the backend terminal. |
 | **Retrieval looks wrong after editing a JD** | Rebuild the index: `curl -X POST http://localhost:8000/api/rag/reindex`, or restart the backend. |
 | **"Almost no text could be extracted"** | The PDF is a scanned image with no text layer. Upload a text-based PDF or a DOCX. |
+
+---
+
+# Deployment
+
+The project is deployed as a **single Docker container on Hugging Face Spaces**.
+One container runs FastAPI, which also serves the built React frontend, so the
+browser talks to exactly one origin and no CORS configuration is involved.
+
+### Why Hugging Face Spaces
+
+The backend loads `all-MiniLM-L6-v2` through `sentence-transformers`, which
+pulls in PyTorch. Measured peak memory with the neural backend is **642 MB**;
+with the TF-IDF fallback it is **169 MB**. Render, Railway and Fly all cap
+their free tiers at **512 MB**, which would silently force the project onto the
+fallback embedder and make the live demo stop matching what the report
+describes. Hugging Face Spaces gives **2 vCPU and 16 GB RAM free**, so the real
+model runs.
+
+### Cost
+
+Nothing in this project is paid. There is no Anthropic key, no OpenAI key and
+no LLM of any kind — `tests/test_api.py` asserts that no backend module imports
+a model provider, so this is checked rather than claimed. The embedding model
+is downloaded once from Hugging Face and runs locally on CPU. The only outbound
+call at runtime is to GitHub's public REST API, which is free.
+
+### Deploying
+
+1. Create a Space at <https://huggingface.co/new-space> — SDK **Docker**,
+   hardware **CPU basic (free)**.
+2. Add the Space as a git remote and push:
+
+   ```
+   git remote add space https://huggingface.co/spaces/<username>/career-engine
+   git push space main
+   ```
+
+3. The first build takes roughly 8–12 minutes, mostly installing the CPU-only
+   PyTorch wheel and warming the model cache. Later pushes are much faster
+   because Docker reuses the dependency layer.
+
+### GitHub rate limits
+
+Unauthenticated GitHub API access allows 60 requests per hour **per IP**. A
+deployed app shares one IP across all its visitors, so that budget is consumed
+quickly. Add a read-only personal access token in the Space's
+**Settings → Variables and secrets** as a secret named `GITHUB_TOKEN` to raise
+the limit to 5,000 requests per hour.
+
+The token is optional. Without it the app still works: when GitHub analysis
+fails the pipeline records a warning and completes using resume evidence alone.
+
+### Configuration
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `GITHUB_TOKEN` | unset | Raises the GitHub API limit to 5,000/hour |
+| `FRONTEND_DIST` | `../frontend/dist` | Where the built frontend lives |
+| `PORT` | `7860` | Port uvicorn binds to (Spaces expects 7860) |
+| `FORCE_OFFLINE_EMBEDDINGS` | unset | Set to `1` to force the TF-IDF backend |
+| `ALLOWED_ORIGINS` | localhost | Only needed if the frontend is hosted separately |
+
+### A note on uploaded resumes
+
+The deployed app stores nothing. Resumes are parsed in memory and discarded
+when the request ends; no database is attached and no file is written to disk.
+This matters because resumes contain personal data, and the simplest way to
+protect it is not to keep it.
