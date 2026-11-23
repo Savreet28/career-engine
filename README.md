@@ -1076,7 +1076,7 @@ which is free.
 3. Deploy.
 
 If Render gives the API a URL other than
-`https://career-engine-api.onrender.com`, update the `destination` in
+`https://career-engine-api-qoji.onrender.com`, update the `destination` in
 `frontend/vercel.json` to match and redeploy.
 
 ### A note on the free tier
