@@ -1,8 +1,16 @@
 # Career Engine
 
+**Live demo: https://career-engine-iota.vercel.app**
+
 A web application that analyses a student's **resume**, **GitHub profile**
 and **target job role** and returns two things: a transparent **ATS score**, and
 an **explainable job match** built with RAG over job-description data.
+
+> The hosted demo runs on free tiers. The API sleeps after 15 minutes of
+> inactivity, so the first request may take about a minute while it restarts.
+> It also uses the TF-IDF fallback embedder rather than `all-MiniLM-L6-v2`,
+> because the free tier caps at 512 MB and the neural backend needs 637 MB
+> (measured). Run it locally for the full neural pipeline — see below.
 
 
 
