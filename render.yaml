@@ -7,7 +7,7 @@ services:
     name: career-engine-api
     runtime: docker
     plan: free
-    region: singapore          # closest free region to India
+    region: oregon             # free tier in Singapore has had repeated outages
     dockerfilePath: ./Dockerfile.render
     healthCheckPath: /api/health
     envVars:

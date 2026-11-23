@@ -1,15 +1,3 @@
----
-title: Career Engine
-emoji: 🎯
-colorFrom: blue
-colorTo: indigo
-sdk: docker
-app_port: 7860
-pinned: false
-license: mit
-short_description: Explainable ATS scoring and RAG job matching. No LLM used.
----
-
 # Career Engine
 
 A web application that analyses a student's **resume**, **GitHub profile**
@@ -1040,63 +1028,80 @@ Scoped to the two objectives.
 
 # Deployment
 
-The project is deployed as a **single Docker container on Hugging Face Spaces**.
-One container runs FastAPI, which also serves the built React frontend, so the
-browser talks to exactly one origin and no CORS configuration is involved.
+The app is deployed as two free services:
 
-### Why Hugging Face Spaces
+| Part | Host | What it does |
+|---|---|---|
+| API | **Render** (free Docker web service) | FastAPI backend |
+| UI | **Vercel** | the built React frontend |
 
-The backend loads `all-MiniLM-L6-v2` through `sentence-transformers`, which
-pulls in PyTorch. Measured peak memory with the neural backend is **642 MB**;
-with the TF-IDF fallback it is **169 MB**. Render, Railway and Fly all cap
-their free tiers at **512 MB**, which would silently force the project onto the
-fallback embedder and make the live demo stop matching what the report
-describes. Hugging Face Spaces gives **2 vCPU and 16 GB RAM free**, so the real
-model runs.
+Vercel rewrites `/api/*` to the Render service (see `frontend/vercel.json`),
+so the frontend keeps its origin-relative calls and no CORS configuration is
+involved.
+
+### The hosted demo uses the fallback embedder
+
+Measured peak RSS with the real `all-MiniLM-L6-v2` backend is **637 MB**
+steady state; importing torch alone costs 214 MB. Render's free tier caps at
+**512 MB**, so the neural backend cannot run there.
+
+The hosted API therefore sets `FORCE_OFFLINE_EMBEDDINGS=1` and uses the
+project's TF-IDF + Truncated SVD backend, which serves the whole app in
+**183 MB**. All 213 tests pass against that configuration. Because
+`rag/embedder.py` imports `sentence_transformers` lazily,
+`backend/requirements-render.txt` omits torch entirely rather than installing
+582 MB that is never loaded.
+
+**Local development is unchanged** and still uses the real model. The numbers
+reported in the project report were measured locally with the neural backend.
 
 ### Cost
 
-Nothing in this project is paid. There is no Anthropic key, no OpenAI key and
-no LLM of any kind — `tests/test_api.py` asserts that no backend module imports
-a model provider, so this is checked rather than claimed. The embedding model
-is downloaded once from Hugging Face and runs locally on CPU. The only outbound
-call at runtime is to GitHub's public REST API, which is free.
+Nothing here is paid. There is no Anthropic key, no OpenAI key and no LLM of
+any kind — `tests/test_api.py` asserts that no backend module imports a model
+provider. The only outbound call at runtime is to GitHub's public REST API,
+which is free.
 
-### Deploying
+### Deploying the API (Render)
 
-1. Create a Space at <https://huggingface.co/new-space> — SDK **Docker**,
-   hardware **CPU basic (free)**.
-2. Add the Space as a git remote and push:
+1. Sign in at <https://dashboard.render.com> with GitHub.
+2. **New → Blueprint**, pick this repository, **Apply**. Render reads
+   `render.yaml` and builds `Dockerfile.render`.
+3. Wait for **Live**, then check `https://<your-service>.onrender.com/api/health`.
 
-   ```
-   git remote add space https://huggingface.co/spaces/<username>/career-engine
-   git push space main
-   ```
+### Deploying the UI (Vercel)
 
-3. The first build takes roughly 8–12 minutes, mostly installing the CPU-only
-   PyTorch wheel and warming the model cache. Later pushes are much faster
-   because Docker reuses the dependency layer.
+1. Sign in at <https://vercel.com/new> with GitHub and import this repository.
+2. Set **Root Directory** to `frontend`. Leave everything else alone.
+3. Deploy.
+
+If Render gives the API a URL other than
+`https://career-engine-api.onrender.com`, update the `destination` in
+`frontend/vercel.json` to match and redeploy.
+
+### A note on the free tier
+
+Render spins a free service down after **15 minutes** without traffic, and the
+next request takes roughly a minute while it restarts. Open the site a few
+minutes before demonstrating it.
 
 ### GitHub rate limits
 
-Unauthenticated GitHub API access allows 60 requests per hour **per IP**. A
-deployed app shares one IP across all its visitors, so that budget is consumed
-quickly. Add a read-only personal access token in the Space's
-**Settings → Variables and secrets** as a secret named `GITHUB_TOKEN` to raise
-the limit to 5,000 requests per hour.
-
-The token is optional. Without it the app still works: when GitHub analysis
-fails the pipeline records a warning and completes using resume evidence alone.
+Unauthenticated GitHub API access allows 60 requests per hour **per IP**, and a
+deployed app shares one IP across all visitors. Add a read-only personal access
+token as `GITHUB_TOKEN` in the Render dashboard (Environment tab) to raise the
+limit to 5,000 per hour. It is optional: without it, a failed GitHub lookup is
+recorded as a warning and the analysis completes using resume evidence alone.
 
 ### Configuration
 
 | Variable | Default | Purpose |
 |---|---|---|
 | `GITHUB_TOKEN` | unset | Raises the GitHub API limit to 5,000/hour |
-| `FRONTEND_DIST` | `../frontend/dist` | Where the built frontend lives |
-| `PORT` | `7860` | Port uvicorn binds to (Spaces expects 7860) |
-| `FORCE_OFFLINE_EMBEDDINGS` | unset | Set to `1` to force the TF-IDF backend |
-| `ALLOWED_ORIGINS` | localhost | Only needed if the frontend is hosted separately |
+| `FORCE_OFFLINE_EMBEDDINGS` | unset | `1` forces the TF-IDF backend (set on Render) |
+| `FRONTEND_DIST` | `../frontend/dist` | Where a built frontend lives, if serving one |
+| `PORT` | `10000` | Port uvicorn binds to; Render injects this |
+| `ALLOWED_ORIGINS` | localhost | Only needed if the UI calls the API cross-origin |
 
 ### A note on uploaded resumes
 
