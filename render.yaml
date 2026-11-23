@@ -1,0 +1,22 @@
+# Render blueprint — https://render.com/docs/blueprint-spec
+#
+# Creates the Career Engine API as a free Docker web service.
+# The frontend is deployed separately on Vercel.
+services:
+  - type: web
+    name: career-engine-api
+    runtime: docker
+    plan: free
+    region: singapore          # closest free region to India
+    dockerfilePath: ./Dockerfile.render
+    healthCheckPath: /api/health
+    envVars:
+      # Render's free tier cannot hold the neural model; see
+      # backend/requirements-render.txt for the measured numbers.
+      - key: FORCE_OFFLINE_EMBEDDINGS
+        value: "1"
+      # Optional: add your GitHub token in the Render dashboard to lift the
+      # API limit from 60/hour to 5,000/hour. Left unset here on purpose so
+      # no secret is ever committed.
+      - key: GITHUB_TOKEN
+        sync: false

@@ -1,0 +1,26 @@
+# Career Engine -- deployment dependencies (Render free tier)
+#
+# Deliberately EXCLUDES sentence-transformers and torch. Importing torch alone
+# costs 214 MB of RSS and the full neural stack peaks at 637 MB, measured;
+# Render's free tier caps at 512 MB, so it cannot run there.
+#
+# rag/embedder.py imports sentence_transformers lazily inside the class, so
+# with FORCE_OFFLINE_EMBEDDINGS=1 the package is never touched and the
+# TF-IDF + Truncated SVD backend is used instead. That backend is pure
+# scikit-learn and serves the whole app in ~183 MB, verified with all 213
+# tests passing.
+#
+# Local development still uses backend/requirements.txt and the real
+# all-MiniLM-L6-v2 model. This file is for the hosted demo only.
+
+fastapi==0.141.1
+uvicorn[standard]==0.52.4
+python-multipart==0.0.32
+pydantic==2.13.5
+python-dotenv==1.2.3
+pdfplumber==0.11.10
+python-docx==1.2.0
+requests==2.34.2
+faiss-cpu==1.15.0
+numpy==2.5.3
+scikit-learn==1.9.1

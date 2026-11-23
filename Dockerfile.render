@@ -1,0 +1,35 @@
+# ---------------------------------------------------------------------------
+# Career Engine API — Render free tier
+# ---------------------------------------------------------------------------
+# API only: the React frontend is hosted on Vercel, which proxies /api here,
+# so the browser sees one origin and no CORS configuration is needed.
+#
+# No torch, no sentence-transformers. See backend/requirements-render.txt.
+# ---------------------------------------------------------------------------
+
+FROM python:3.12-slim
+
+# faiss links against libgomp, which the slim image omits.
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends libgomp1 \
+ && rm -rf /var/lib/apt/lists/* \
+ && useradd -m -u 1000 user
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    FORCE_OFFLINE_EMBEDDINGS=1
+
+RUN mkdir -p /home/user/app && chown -R user:user /home/user
+WORKDIR /home/user/app
+
+COPY --chown=user backend/requirements-render.txt ./
+RUN pip install --no-cache-dir --upgrade pip \
+ && pip install --no-cache-dir -r requirements-render.txt
+
+COPY --chown=user backend/ ./backend/
+
+USER user
+WORKDIR /home/user/app/backend
+
+# Render injects $PORT and expects the service to bind it.
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-10000}"]
