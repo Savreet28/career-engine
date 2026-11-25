@@ -231,6 +231,58 @@
       "difficulty": "fresher",
       "what_they_are_checking": "Whether you have a real process - shape, types, missing values, distributions - before jumping to modelling.",
       "roles": []
+    },
+    {
+      "id": "ml_senior_drift",
+      "question": "A model that performed well for six months starts degrading in production, but nobody has changed the code. How do you find out why, and what would you have built up front to catch it sooner?",
+      "skills": [
+        "Machine Learning",
+        "MLOps",
+        "Model Evaluation"
+      ],
+      "kind": "technical",
+      "difficulty": "senior",
+      "what_they_are_checking": "Whether you think about data drift and monitoring over a model's life, not only about training it once.",
+      "roles": []
+    },
+    {
+      "id": "ml_senior_rag_eval",
+      "question": "How would you decide whether a RAG system is retrieving the right passages, without reading every result by hand?",
+      "skills": [
+        "RAG",
+        "Embeddings",
+        "Vector Databases"
+      ],
+      "kind": "technical",
+      "difficulty": "senior",
+      "what_they_are_checking": "Whether you can define an evaluation for a retrieval system rather than judging it by a few impressive examples.",
+      "roles": []
+    },
+    {
+      "id": "ml_senior_baseline",
+      "question": "A stakeholder asks for a deep learning model. You believe logistic regression would do the job. How do you settle it?",
+      "skills": [
+        "Machine Learning",
+        "Statistics",
+        "A/B Testing"
+      ],
+      "kind": "conceptual",
+      "difficulty": "senior",
+      "what_they_are_checking": "Whether you can defend the simplest adequate solution with evidence instead of deferring to whoever asked loudest.",
+      "roles": []
+    },
+    {
+      "id": "ml_senior_leakage",
+      "question": "Your offline metrics are excellent and the live results are poor. Walk through how you would hunt for the cause.",
+      "skills": [
+        "Feature Engineering",
+        "Model Evaluation",
+        "Data Analysis"
+      ],
+      "kind": "technical",
+      "difficulty": "senior",
+      "what_they_are_checking": "Whether you understand train/serve skew and leakage, and can debug a pipeline rather than blame the model.",
+      "roles": []
     }
   ]
 }

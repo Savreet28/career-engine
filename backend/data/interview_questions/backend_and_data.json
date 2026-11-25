@@ -148,6 +148,55 @@
       "difficulty": "mid",
       "what_they_are_checking": "Whether you can compare frameworks on real properties - validation, async support, generated docs - rather than popularity.",
       "roles": []
+    },
+    {
+      "id": "be_senior_latency",
+      "question": "One endpoint is responsible for most of your latency. How do you investigate it, and what would you weigh before reaching for a queue?",
+      "skills": [
+        "System Design",
+        "Microservices",
+        "Message Queues"
+      ],
+      "kind": "technical",
+      "difficulty": "senior",
+      "what_they_are_checking": "Whether you measure before re-architecting, and whether you know what asynchronous processing actually costs you.",
+      "roles": []
+    },
+    {
+      "id": "be_senior_migration",
+      "question": "You must add a column to a very large table that is read constantly. How do you ship that without downtime?",
+      "skills": [
+        "Database Design",
+        "SQL"
+      ],
+      "kind": "technical",
+      "difficulty": "senior",
+      "what_they_are_checking": "Whether you have run migrations against a live system rather than only a local database.",
+      "roles": []
+    },
+    {
+      "id": "be_senior_idempotency",
+      "question": "A payment request times out and the client retries it. How do you make sure the customer is not charged twice?",
+      "skills": [
+        "REST APIs",
+        "System Design"
+      ],
+      "kind": "technical",
+      "difficulty": "senior",
+      "what_they_are_checking": "Whether you design for retries and partial failure instead of assuming the request always succeeds.",
+      "roles": []
+    },
+    {
+      "id": "be_senior_trust",
+      "question": "Where do you draw the line between what your API trusts and what it verifies, and what happens when a token leaks?",
+      "skills": [
+        "Authentication",
+        "REST APIs"
+      ],
+      "kind": "conceptual",
+      "difficulty": "senior",
+      "what_they_are_checking": "Whether security is a position you can argue or a library you installed.",
+      "roles": []
     }
   ]
 }

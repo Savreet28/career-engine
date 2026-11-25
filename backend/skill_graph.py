@@ -132,6 +132,13 @@ PREREQUISITES: Dict[str, List[str]] = {
 # roadmap then names the skill without pretending to have a link.
 # ---------------------------------------------------------------------------
 OFFICIAL_DOCS: Dict[str, str] = {
+    "AWS": "https://docs.aws.amazon.com/",
+    "Java": "https://docs.oracle.com/en/java/",
+    "R": "https://www.r-project.org/other-docs.html",
+    "Redux": "https://redux.js.org/introduction/getting-started",
+    "Webpack": "https://webpack.js.org/concepts/",
+    "Figma": "https://help.figma.com/",
+    "Tableau": "https://help.tableau.com/current/pro/desktop/en-us/default.htm",
     "Python": "https://docs.python.org/3/tutorial/",
     "JavaScript": "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
     "TypeScript": "https://www.typescriptlang.org/docs/",
@@ -171,6 +178,44 @@ OFFICIAL_DOCS: Dict[str, str] = {
 def prerequisites_of(skill: str) -> List[str]:
     """Direct prerequisites of a skill, in the order they should be learned."""
     return list(PREREQUISITES.get(skill, []))
+
+
+# ---------------------------------------------------------------------------
+# "How will I know I have actually learned this?"
+#
+# Keyed by the skill's category rather than the skill, because the test of
+# understanding is the same across a category and writing 112 bespoke lines
+# would be inventing detail we cannot support. Deliberately behavioural: every
+# one of these can be checked by doing something, and none of them mentions how
+# long it should take.
+# ---------------------------------------------------------------------------
+CHECKPOINTS: Dict[str, str] = {
+    "language": "You can write and debug a small program in it without copying "
+                "boilerplate, and explain what each part does.",
+    "frontend": "You can build a working screen with it and say why you "
+                "structured it that way rather than another way.",
+    "backend":  "You can build a small service that uses it and describe what "
+                "happens when it fails.",
+    "data":     "You can load a real dataset, answer a question with it, and "
+                "defend the answer to someone who doubts it.",
+    "ml":       "You can explain what the method is doing, and show a result "
+                "you measured rather than a script that merely runs.",
+    "devops":   "You can set it up from scratch and explain what breaks "
+                "without it.",
+    "tool":     "You have used it on a real piece of work and can say what it "
+                "saved you and what it cost you.",
+    "concept":  "You can explain it in your own words to someone who has never "
+                "studied it, without reaching for a diagram you memorised.",
+}
+
+DEFAULT_CHECKPOINT = ("You can use it on a real piece of work and explain the "
+                      "choices you made while doing so.")
+
+
+def checkpoint_for(skill: str) -> str:
+    """How a learner can tell they have actually acquired ``skill``."""
+    from skills_data import skill_category
+    return CHECKPOINTS.get(skill_category(skill), DEFAULT_CHECKPOINT)
 
 
 @lru_cache(maxsize=None)

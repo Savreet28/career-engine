@@ -112,6 +112,31 @@
       "difficulty": "mid",
       "what_they_are_checking": "Whether you can argue a tooling decision on its merits, including the costs.",
       "roles": []
+    },
+    {
+      "id": "fe_senior_perf",
+      "question": "Your page is slow on a mid-range Android phone but fine on your laptop. How do you find the cause, and what do you fix first?",
+      "skills": [
+        "React",
+        "Responsive Design"
+      ],
+      "kind": "technical",
+      "difficulty": "senior",
+      "what_they_are_checking": "Whether you profile on a real device instead of optimising by instinct.",
+      "roles": []
+    },
+    {
+      "id": "fe_senior_state",
+      "question": "When does adding a global state library make an application harder to work on rather than easier?",
+      "skills": [
+        "React",
+        "Redux",
+        "TypeScript"
+      ],
+      "kind": "conceptual",
+      "difficulty": "senior",
+      "what_they_are_checking": "Whether you can argue against a tool you know well, which is the harder direction.",
+      "roles": []
     }
   ]
 }

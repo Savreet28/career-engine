@@ -21,18 +21,24 @@ the job description never named. Someone missing PyTorch may also be missing
 Deep Learning, which no posting listed because it is assumed. The roadmap
 surfaces those, because skipping them is exactly how a learning plan fails.
 
-No time estimates
------------------
+No time estimates, but a finish line
+------------------------------------
 There are deliberately no "learn this in 3 weeks" figures. Nothing in this
 project supports such a number, and inventing one would be the least
 defensible thing in the application. Ordering is the real value.
+
+What a step *can* honestly say is how you would know you had learned it, so
+every step carries a ``checkpoint`` -- a behavioural test drawn from the
+skill's category. Unlike a duration, that is something the learner can check
+for themselves.
 """
 
 from __future__ import annotations
 
 from typing import Dict, List, Optional, Sequence
 
-from skill_graph import OFFICIAL_DOCS, all_prerequisites_of, depth_of, prerequisites_of
+from skill_graph import (OFFICIAL_DOCS, all_prerequisites_of, checkpoint_for,
+                         depth_of, prerequisites_of)
 from skills_data import skill_category, sort_skills
 
 # A soft cap: a phase shows at most this many steps, but the cap is relaxed
@@ -86,6 +92,10 @@ def _step(skill: str, requirement_level: str, match: dict,
         "ready_to_start": not missing_prereqs,
         "unlocks": sorted(unlocks.get(skill, [])),
         "docs": OFFICIAL_DOCS.get(skill),
+        # Every step says how the learner can tell they are done. A link is
+        # only available where a first-party one exists; a checkpoint always
+        # is, which is why the two are separate fields.
+        "checkpoint": checkpoint_for(skill),
     }
 
 
@@ -186,8 +196,16 @@ def build_roadmap(
         "methodology": (
             "Ordered by a prerequisite graph, then by how strongly the retrieved job "
             "descriptions demanded each skill. Skills the job description never named "
-            "but that other gaps depend on are surfaced as foundations. There are no "
-            "time estimates, because nothing in this analysis supports one."
+            "but that other gaps depend on are surfaced as foundations. Every step "
+            "carries a checkpoint describing how you would know you had learned it. "
+            "There are no time estimates, because nothing in this analysis supports "
+            "one."
+        ),
+        "resources_note": (
+            "Documentation links are first-party only and point at the project's own "
+            "site, so they do not rot. A step without a link is a concept rather than "
+            "a product -- there is no official home for 'System Design' -- so it "
+            "carries only its checkpoint."
         ),
     }
 

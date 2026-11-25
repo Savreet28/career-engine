@@ -133,6 +133,42 @@
       "difficulty": "fresher",
       "what_they_are_checking": "Whether you see version control as communication with future readers, not just a save button.",
       "roles": []
+    },
+    {
+      "id": "pf_senior_review",
+      "question": "You are reviewing a change that is correct but, in your view, badly structured. The author disagrees. How do you handle it?",
+      "skills": [
+        "Code Review",
+        "Software Testing"
+      ],
+      "kind": "behavioural",
+      "difficulty": "senior",
+      "what_they_are_checking": "Whether you can hold a technical line without blocking the team or making it personal.",
+      "roles": []
+    },
+    {
+      "id": "pf_senior_complexity",
+      "question": "When is the asymptotically worse algorithm the right choice in production?",
+      "skills": [
+        "Algorithms",
+        "Data Structures"
+      ],
+      "kind": "conceptual",
+      "difficulty": "senior",
+      "what_they_are_checking": "Whether you reason about constants, real data sizes and maintenance cost, not only Big-O notation.",
+      "roles": []
+    },
+    {
+      "id": "pf_senior_slow_suite",
+      "question": "Your test suite takes forty minutes and people have started skipping it. What do you change?",
+      "skills": [
+        "Software Testing",
+        "CI/CD"
+      ],
+      "kind": "technical",
+      "difficulty": "senior",
+      "what_they_are_checking": "Whether you treat the test suite as something with its own users, rather than as overhead.",
+      "roles": []
     }
   ]
 }

@@ -1,17 +1,21 @@
 import { Card, Pill } from './ui.jsx'
 
-const GROUP_TONE = { prove: 'good', gaps: 'warn', about_you: 'accent' }
+const GROUP_TONE = { your_work: 'accent', prove: 'good', gaps: 'warn', about_you: 'neutral' }
 
 /**
  * Objective 3: the questions this candidate is most likely to face.
  *
- * Selected by skill tag from a curated local bank, filtered to the experience
- * level, ordered by how strongly the job descriptions demanded each skill.
+ * Two sources, both traceable. Questions about the candidate's own projects are
+ * built from the entries parsed out of their resume and carry the line that
+ * produced them. The rest are selected by skill tag from a curated local bank,
+ * filtered to the experience level, ordered by how strongly the job
+ * descriptions demanded each skill.
+ *
  * Deliberately no model answers — each question states what the interviewer is
  * checking for, so the candidate prepares their own.
  */
 export default function InterviewPrep({ prep }) {
-  const { groups, headline, methodology, bank_size: bankSize } = prep
+  const { groups, headline, methodology } = prep
 
   if (!groups?.length) {
     return (
@@ -25,7 +29,11 @@ export default function InterviewPrep({ prep }) {
     <Card
       title="Interview preparation"
       subtitle="The questions you are most likely to be asked, based on your actual skill profile."
-      action={<Pill tone="accent">{prep.total_questions} of {bankSize}</Pill>}
+      action={
+        <Pill tone="accent">
+          {prep.total_questions} question{prep.total_questions === 1 ? '' : 's'}
+        </Pill>
+      }
     >
       <p className="mb-4 text-xs leading-relaxed text-slate-300">{headline}</p>
 
@@ -60,12 +68,23 @@ export default function InterviewPrep({ prep }) {
                       <Pill tone="accent">{question.matched_skill}</Pill>
                     )}
                     <Pill tone="neutral">{question.kind}</Pill>
+                    {question.source === 'resume' && (
+                      <Pill tone="good" title="Built from an entry on your own resume">
+                        from your resume
+                      </Pill>
+                    )}
                     {question.stretch && (
                       <Pill tone="warn" title="Above your stated level, but it is the only question covering this skill">
                         stretch
                       </Pill>
                     )}
                   </div>
+
+                  {question.evidence && (
+                    <p className="mt-2 ml-7.5 border-l-2 border-accent-500/40 pl-2.5 text-[11px] italic leading-relaxed text-slate-400">
+                      {question.evidence}
+                    </p>
+                  )}
 
                   <p className="mt-2 ml-7.5 text-[11px] leading-relaxed text-slate-400">
                     <span className="font-medium text-slate-300">

@@ -94,6 +94,24 @@
       "difficulty": "fresher",
       "what_they_are_checking": "Honesty plus a plan. Pretending you know it is the worst possible answer - prepare this one properly.",
       "roles": []
+    },
+    {
+      "id": "pb_senior_overruled",
+      "question": "Describe a technical decision you argued for and lost. What did you do afterwards?",
+      "skills": [],
+      "kind": "behavioural",
+      "difficulty": "senior",
+      "what_they_are_checking": "Whether you can disagree and commit, and whether being overruled teaches you anything.",
+      "roles": []
+    },
+    {
+      "id": "pb_senior_onboarding",
+      "question": "How do you bring a new team member up to speed on a codebase you know well?",
+      "skills": [],
+      "kind": "behavioural",
+      "difficulty": "senior",
+      "what_they_are_checking": "Whether you can transfer what you know rather than keep it, which is most of what changes at senior level.",
+      "roles": []
     }
   ]
 }

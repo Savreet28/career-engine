@@ -393,7 +393,7 @@ def run_pipeline(
 
     # -- 8. interview preparation -------------------------------------------
     yield "stage", _stage("interview", "Selecting interview questions", "running")
-    interview = build_interview_prep(match, role, experience_level)
+    interview = build_interview_prep(match, role, experience_level, resume=resume)
     yield "stage", _stage("interview", "Selecting interview questions", "done",
                           ms=mark("interview"),
                           detail=f"{interview['total_questions']} questions selected")
@@ -766,7 +766,7 @@ async def api_interview_prep(
     )
     match = match_candidate_to_role(parsed, github, role, retrieval["results"],
                                     jd_text=jd_text, experience_level=level_id)
-    return build_interview_prep(match, role, level_id)
+    return build_interview_prep(match, role, level_id, resume=parsed)
 
 
 @app.post("/api/analyze", tags=["analysis"])

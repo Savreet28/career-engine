@@ -5,10 +5,15 @@ import { Card, Pill } from './ui.jsx'
  *
  * Steps are ordered by a prerequisite graph and by how strongly the retrieved
  * job descriptions demanded each skill. There are deliberately no time
- * estimates — nothing in the analysis supports one.
+ * estimates — nothing in the analysis supports one. Each step instead carries a
+ * checkpoint: how the learner would know they had actually acquired the skill,
+ * which is something they can check for themselves.
  */
 export default function Roadmap({ roadmap }) {
-  const { phases, headline, methodology, hidden_prerequisites: hidden, omitted_steps: omitted } = roadmap
+  const {
+    phases, headline, methodology, hidden_prerequisites: hidden,
+    omitted_steps: omitted, resources_note: resourcesNote,
+  } = roadmap
 
   if (!phases?.length) {
     return (
@@ -76,6 +81,15 @@ export default function Roadmap({ roadmap }) {
 
                   <p className="mt-2 text-[11px] leading-relaxed text-slate-400">{step.why}</p>
 
+                  {step.checkpoint && (
+                    <p className="mt-2 rounded-md bg-ink-800/60 px-2.5 py-1.5 text-[11px] leading-relaxed text-slate-400">
+                      <span className="font-medium text-slate-300">
+                        You will know you have it when:
+                      </span>{' '}
+                      {step.checkpoint}
+                    </p>
+                  )}
+
                   <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px]">
                     {step.blockers_outside_plan?.length > 0 && (
                       <span className="text-warn-400">
@@ -118,6 +132,7 @@ export default function Roadmap({ roadmap }) {
 
       <p className="mt-4 border-t border-ink-800 pt-3 text-[11px] leading-relaxed text-slate-500">
         {methodology}
+        {resourcesNote ? ` ${resourcesNote}` : ''}
       </p>
     </Card>
   )

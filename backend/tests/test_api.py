@@ -618,6 +618,18 @@ def test_roadmap() -> None:
     check("documentation links, where given, are official https URLs",
           all(s["docs"].startswith("https://") for s in steps if s.get("docs")))
 
+    # A step without a link must still tell the learner how to know they are
+    # done -- that is the point of the checkpoint.
+    check("every step says how you would know you had learned it",
+          all(s.get("checkpoint") for s in steps),
+          str([s["skill"] for s in steps if not s.get("checkpoint")]))
+    check("checkpoints never smuggle in a time estimate",
+          not any(word in s["checkpoint"].lower() for s in steps
+                  for word in ("week", "hour", "day", "month")),
+          "a checkpoint describes a capability, never a duration")
+    check("the plan explains why some steps carry no link",
+          bool(plan.get("resources_note")))
+
     # A strong resume should need far less work than a weak one.
     strong = requests.post(f"{BASE}/api/roadmap", files=resume_file(),
                            data={"role_id": "ai_ml_engineer",
@@ -650,6 +662,14 @@ def test_interview_prep() -> None:
     check("every difficulty maps to an experience level",
           all(q["difficulty"] in ORDERED_LEVEL_IDS for q in bank),
           str(sorted({q["difficulty"] for q in bank} - set(ORDERED_LEVEL_IDS))))
+    # Every level the UI offers must have real questions behind it, or that
+    # level silently falls back to easier ones.
+    for level_id in ORDERED_LEVEL_IDS:
+        check(f"the bank has questions at '{level_id}' level",
+              any(q["difficulty"] == level_id for q in bank))
+    check("no bank question collides with a generated resume question",
+          not any(str(q["id"]).startswith("resume_") for q in bank),
+          "'resume_' is reserved for questions generated from the candidate")
     check("question ids are unique",
           len({q["id"] for q in bank}) == len(bank))
     check("every question says what the interviewer is checking",
@@ -680,8 +700,29 @@ def test_interview_prep() -> None:
     check("questions are grouped", len(prep["groups"]) >= 2, str(len(prep["groups"])))
     check("no question appears twice",
           len({q["id"] for q in questions}) == len(questions))
-    check("questions are drawn from the bank",
-          {q["id"] for q in questions} <= {b["id"] for b in bank})
+    # Questions now come from two places: the curated bank, and the candidate's
+    # own resume. Both must be labelled, and each must behave correctly.
+    check("every question declares where it came from",
+          all(q.get("source") in ("bank", "resume") for q in questions),
+          str(sorted({q.get("source") for q in questions})))
+
+    from_bank = [q for q in questions if q.get("source") == "bank"]
+    from_resume = [q for q in questions if q.get("source") == "resume"]
+
+    check("bank questions are drawn from the bank",
+          {q["id"] for q in from_bank} <= {b["id"] for b in bank})
+    check("the resume produced questions about the candidate's own work",
+          len(from_resume) >= 1, "sample_resume lists projects, so some are expected")
+    check("every resume question quotes the line it came from",
+          all(q.get("evidence") for q in from_resume),
+          str([q["id"] for q in from_resume if not q.get("evidence")]))
+    check("every resume question carries a reserved id",
+          all(q["id"].startswith("resume_") for q in from_resume))
+    check("resume questions are never shown as a stretch",
+          not any(q["stretch"] for q in from_resume),
+          "they are written at the candidate's own level")
+    check("resume questions say what the interviewer is checking",
+          all(q.get("what_they_are_checking") for q in from_resume))
 
     # A fresher must not be shown senior-level questions unless that skill has
     # nothing easier -- and those must be flagged as a stretch.
@@ -700,6 +741,19 @@ def test_interview_prep() -> None:
         check("the gaps group only covers skills the candidate is missing",
               all(q["matched_skill"] in missing for q in gaps["questions"]),
               str([q["matched_skill"] for q in gaps["questions"]]))
+
+    # A senior candidate must actually meet senior questions, not the fresher
+    # ones that happen to sit first in the bank.
+    senior = requests.post(f"{BASE}/api/interview-prep", files=resume_file(),
+                           data={"role_id": "ai_ml_engineer",
+                                 "experience_level": "senior"}, timeout=120).json()
+    senior_qs = [q for g in senior["groups"] for q in g["questions"]]
+    check("a senior candidate is asked senior-level questions",
+          any(q["difficulty"] == "senior" for q in senior_qs),
+          str(sorted({q["difficulty"] for q in senior_qs})))
+    check("a fresher is not asked more hard questions than a senior",
+          sum(1 for q in questions if q["difficulty"] == "senior")
+          <= sum(1 for q in senior_qs if q["difficulty"] == "senior"))
 
     again = requests.post(f"{BASE}/api/interview-prep", files=resume_file(),
                           data={"role_id": "ai_ml_engineer",
